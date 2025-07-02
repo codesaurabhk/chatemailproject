@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Text from '../components/text/text';
+import Sidebar from '../components/SideBar/Sidebar';
+
 
 const PageRouter = () => {
     const router =createBrowserRouter([
@@ -8,7 +10,7 @@ const PageRouter = () => {
       path: "/",
       element: (
         <>
-          <Text/>
+          <Sidebar/>
         </>
       ),
     },
