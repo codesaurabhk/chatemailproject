@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.mainemailmessage {
+    background-color: white;
+     padding: 10px 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.inbox {
+    display: flex;
+    flex-direction: column;
+}
+.twothreemail {
+    font-size: 18px;
+    color: #676969;
+    display: flex;
+    align-items: center;
+}
+.filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.searchinputdiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 200px;
+    border: 1px solid #eff0f3;
+     cursor: pointer;
+     padding: 5px 5px;
+     border-radius: 5px;
+     color:#cbcbcc;
+}
+.searchtext {
+    outline: none;
+    border: none;
+}
+.searchtext::placeholder{
+    color:#cbcbcc;
+}
+.settingrefreshdiv {
+ display: flex;
+ gap: 20px;
+ color: #676969;
+ cursor: pointer;
+}
+
+/* justinmaindiv */
+.justinmaindiv{
+    padding: 10px 20px;
+    /* background-color: #eff0f3; */
+    border-bottom: 1px solid #e8e9eb;
+}
+.justinleftrightmaindiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+     font-family: "Poppins", sans-serif;
+     margin-bottom: 10px;
+}
+.justinmaindivleftdiv {
+  display: flex;
+  gap: 15px;
+}
+.justinmaindivrightdiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #676969;
+   font-family: "Poppins", sans-serif;
+}
+/* folder gallery */
+.foldergallerydiv {
+    display: flex;
+    justify-content: space-between;
+}
