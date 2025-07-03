@@ -1,0 +1,194 @@
+[
+  {
+    "id": 1,
+    "sender": {
+      "name": "Justin Lapoinite",
+      "initials": "CD",
+      "labelColor": "#6941c6",
+      "backgroundColor":"#6941c6"
+    },
+    "subject": "Client Dashboard",
+    "messagePreview": "It seems that recipients are receiving...",
+    "time": "3:13 PM",
+    "status": {
+      "read": false,
+      "dotColor": "#1bb61b"
+    },
+    "folders": {
+      "folderCount": 3,
+      "galleryCount": 24
+    },
+    "tags": {
+      "starred": true,
+      "labels": [
+        {
+          "name": "Projects",
+          "color": "#659bfb",
+          "backgroundColor": "#c5d9fe"
+        }
+      ],
+      "extraLabelCount": 1,
+      "extraLabelColor": "#010c27"
+    }
+  },
+  {
+    "id": 2,
+    "sender": {
+      "name": "Amanda Jones",
+      "initials": "AJ",
+      "labelColor": "#e74c3c",
+      "backgroundColor":"#f9c542"
+    },
+    "subject": "Website Redesign",
+    "messagePreview": "Please review the updated homepage mockups.",
+    "time": "11:45 AM",
+    "status": {
+      "read": true,
+      "dotColor": "red"
+    },
+    "folders": {
+      "folderCount": 2,
+      "galleryCount": 10
+    },
+    "tags": {
+      "starred": false,
+      "labels": [
+        {
+          "name": "Applications",
+          "color": "red",
+          "backgroundColor": "#fd9798"
+        }
+      ],
+      "extraLabelCount": 2,
+      "extraLabelColor": "#010c27"
+    }
+  },
+  {
+    "id": 3,
+    "sender": {
+      "name": "Daniel Kim",
+      "initials": "DK",
+      "labelColor": "#3498db",
+      "backgroundColor": "#f9c542"
+    },
+    "subject": "Marketing Report",
+    "messagePreview": "Q2 marketing performance attached.",
+    "time": "9:20 AM",
+    "status": {
+      "read": false,
+      "dotColor": "red"
+    },
+    "folders": {
+      "folderCount": 5,
+      "galleryCount": 8
+    },
+    "tags": {
+      "starred": true,
+      "labels": [
+        {
+          "name": "External",
+          "color": "#ff9800",
+          "backgroundColor": "#fff3cd"
+        }
+      ],
+      "extraLabelCount": 0,
+      "extraLabelColor": "#010c27"
+    }
+  },
+  {
+    "id": 4,
+    "sender": {
+      "name": "Sophie Turner",
+      "initials": "ST",
+      "labelColor": "#9b59b6",
+      "backgroundColor":"#f08e91"
+    },
+    "subject": "Team Meeting Notes",
+    "messagePreview": "Here's the summary from today's sync.",
+    "time": "3:13 PM",
+    "status": {
+      "read": true,
+      "dotColor": "red"
+    },
+    "folders": {
+      "folderCount": 1,
+      "galleryCount": 3
+    },
+    "tags": {
+      "starred": false,
+      "labels": [
+        {
+          "name": "Team Events",
+          "color": "#a4d8b9",
+          "backgroundColor": "#ecfdf3"
+        }
+      ],
+      "extraLabelCount": 1,
+      "extraLabelColor": "#010c27"
+    }
+  },
+  {
+    "id": 5,
+    "sender": {
+      "name": "Kasim Siddique",
+      "initials": "KS",
+      "labelColor": "#9b59b6",
+      "backgroundColor":"#3a5592"
+    },
+    "subject": "Team Meeting Notes",
+    "messagePreview": "Here's the summary from today's sync.",
+    "time": "3:13 PM",
+    "status": {
+      "read": true,
+      "dotColor": "red"
+    },
+    "folders": {
+      "folderCount": 2,
+      "galleryCount": 4
+    },
+    "tags": {
+      "starred": false,
+      "labels": [
+        {
+          "name": "External",
+          "color": "red",
+          "backgroundColor": "#fd9798"
+        }
+      ],
+      "extraLabelCount": 4,
+      "extraLabelColor": "#010c27"
+    }
+  },
+  {
+    "id": 6,
+    "sender": {
+      "name": "Saurav Kumar",
+      "initials": "SK",
+      "labelColor": "#9b59b6",
+      "backgroundColor":"#f872a9"
+    },
+    "subject": "Team Meeting Notes",
+    "messagePreview": "Here's the summary from today's sync.",
+    "time": "3:13 PM",
+    "status": {
+      "read": true,
+      "dotColor": "red"
+    },
+    "folders": {
+      "folderCount": 2,
+      "galleryCount": 4
+    },
+    "tags": {
+      "starred": false,
+      "labels": [
+        {
+          "name": "External",
+          "color": "#a4265e",
+          "backgroundColor": "#f08e91"
+        }
+      ],
+      "extraLabelCount": 4,
+      "extraLabelColor": "#010c27"
+    }
+  }
+]

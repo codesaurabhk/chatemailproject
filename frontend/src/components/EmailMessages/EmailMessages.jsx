@@ -9,6 +9,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { AiOutlineFolderOpen } from "react-icons/ai";
 import { GrGallery } from "react-icons/gr";
 import { AiFillStar } from "react-icons/ai";
+import EmailData from "../EmailMessages/emailData.json"
 
 const EmailMessages = () => {
   return (
@@ -53,6 +54,8 @@ const EmailMessages = () => {
         </div>
       </div>
       {/* email message div */}
+      <>
+      {EmailData.map((email) => (
       <div className="justinmaindiv">
         <div className="justinleftrightmaindiv">
           {/* left */}
@@ -64,13 +67,13 @@ const EmailMessages = () => {
               />
               <span
                 style={{
-                  backgroundColor: "#6941c6",
+                  backgroundColor: email.sender.backgroundColor,
                   color: "white",
                   borderRadius: "50%",
                   padding: "10px",
                 }}
               >
-                CD
+                {email.sender.initials}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -82,13 +85,13 @@ const EmailMessages = () => {
                   marginBottom: "5px",
                 }}
               >
-                Justin Lapoinite
+                {email.sender.name}
               </span>
               <span style={{ color: "#636363", fontSize: "16px" }}>
-                Client Dashboard
+                {email.subject}
               </span>
               <span style={{ color: "#636363", fontSize: "16px" }}>
-                It seems that recipients are receiving...
+               {email.messagePreview}
               </span>
             </div>
           </div>
@@ -104,9 +107,9 @@ const EmailMessages = () => {
                 fontWeight: "bold",
               }}
             >
-              <BsDot style={{ color: "#1bb61b", fontSize: "30px" }} />
+              <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
             </span>
-            <span style={{ marginBottom: "5px" }}>3:13 PM</span>
+            <span style={{ marginBottom: "5px" }}>{email.time}</span>
           </div>
         </div>
         {/* folder gallery */}
@@ -126,23 +129,27 @@ const EmailMessages = () => {
             <span>
               <GrGallery />
             </span>
-            <span>+24</span>
+            <span>{email.folders.galleryCount}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {email.tags.starred && (
             <span>
               <AiFillStar style={{ fontSize: "15px", color: "#fba64b" }} />
             </span>
-            <span
+            )}
+            {email.tags.labels.map((label, index) => (
+            <span key={index}
               style={{
                 padding: "4px 7px",
-                backgroundColor: "#c5d9fe",
+                backgroundColor: label.backgroundColor,
                 borderRadius: "5px",
-                color: "#659bfb",
+                color: label.color,
               }}
             >
               <input type="checkbox" />
-              <span>Projects</span>
+              <span>{label.name}</span>
             </span>
+            ))}
             <span
               style={{
                 padding: "4px 7px",
@@ -152,11 +159,13 @@ const EmailMessages = () => {
                 fontSize: "12px",
               }}
             >
-              +1
+              +{email.tags.extraLabelCount}
             </span>
           </div>
         </div>
       </div>
+      ))}
+      </>   
     </div>
   );
 };
