@@ -60,6 +60,8 @@
     color: #555;
     font-size: 15px;
     margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .item {
@@ -104,16 +106,62 @@
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
-    /* display: inline-block; */
-     background-color: white;
-    border-radius: 30%;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 20%;
+  border: 2px solid gray;
+  background-color: white;
+  cursor: pointer;
+}
+.dot:checked {
+  background-color: currentColor;
 }
 
-.dot.team { border: 2px solid green;}
-.dot.work { border: 2px solid rgb(255, 208, 0); }
-.dot.external { border: 2px solid red; }
-.dot.projects { border: 2px solid gray; }
-.dot.personal { background-color: orange; }
-.dot.finance { background-color: green; }
+.dot.work {
+  border-color: #FFD000;
+  color: #FFD000;
+}
+
+.dot.external {
+  border-color: red;
+  color: red;
+}
+
+
+
+.dot.team {
+  border-color: green;
+  color: green;
+}
+.dot.applications{
+    border-color: #343C6F;
+    color: #343C6F;
+}
+.dot.design{
+    border-color: rgb(42, 42, 221);
+    color: rgb(42, 42, 221);
+}
+.plus{
+    background-color: white;
+    color: rgb(255, 136, 0);
+    font-size: large;
+}
+.projects{
+    font-size: large;
+    color: red;
+}
+
+.personal{
+    font-size: large;
+    color: rgb(255, 166, 0);
+}
+
+.finance{
+     font-size: large;
+    color: green;
+}
+.projectk{
+    font-size: large;
+    color: rgb(255, 94, 0);
+}
