@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../EmailMessages/EmailMessages.css";
 import { IoIosSearch, IoMdSettings } from "react-icons/io";
 import { RiFilterOffLine } from "react-icons/ri";
@@ -12,6 +12,8 @@ import { AiFillStar } from "react-icons/ai";
 import EmailData from "../EmailMessages/emailData.json"
 
 const EmailMessages = () => {
+    const [search, setSearch] = useState("");
+
   return (
     <div className="mainemailmessage">
       <div className="header">
@@ -44,18 +46,23 @@ const EmailMessages = () => {
               className="searchtext"
               type="text"
               placeholder="Search Email"
+              value={search} onChange={(e) => setSearch(e.target.value)}
             />
           </span>
           <span className="settingrefreshdiv">
             <RiFilterOffLine />
             <AiOutlineSetting />
-            <BiRefresh />
+            <BiRefresh onClick={() => window.location.reload()} />
           </span>
         </div>
       </div>
       {/* email message div */}
       <>
-      {EmailData.map((email) => (
+      {EmailData.filter((email) => 
+      email.sender.name.toLowerCase().includes(search.toLowerCase()) || 
+      email.subject.toLowerCase().includes(search.toLowerCase()) ||
+      email.messagePreview.toLowerCase().includes(search.toLowerCase())
+      ).map((email) => (
       <div className="justinmaindiv">
         <div className="justinleftrightmaindiv">
           {/* left */}
@@ -70,7 +77,7 @@ const EmailMessages = () => {
                   backgroundColor: email.sender.backgroundColor,
                   color: "white",
                   borderRadius: "50%",
-                  padding: "10px",
+                  width:"40px", height:"40px", display:'flex', alignItems:'center', justifyContent:'center', objectFit:'contain'
                 }}
               >
                 {email.sender.initials}

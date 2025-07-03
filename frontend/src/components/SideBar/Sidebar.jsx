@@ -9,9 +9,12 @@ import { RiDeleteBinLine, RiSpam2Line } from "react-icons/ri";
 import { ImCompass } from "react-icons/im";
 import { PiUploadLight } from "react-icons/pi";
 import { IoSquareOutline } from "react-icons/io5";
+import { useState } from 'react';
+import EmailModal from '../EmailModal/EmailModal';
 
 
 const Sidebar = () => {
+  const [emailshow, setEmailShow] = useState(false)
   return (
     <div className='sidebarm'>
       <div className='user-box'>
@@ -22,7 +25,10 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className='compose'><FaRegEdit />Compose</div>
+      <div className='compose' onClick={()=> setEmailShow(true)}>
+        <FaRegEdit />Compose
+        </div>
+        <EmailModal show={emailshow} onClose={()=> setEmailShow(false)}/>
 
       <div className='section'>
         <div className='section-title'>Emails</div>
