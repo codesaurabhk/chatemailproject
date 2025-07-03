@@ -37,7 +37,7 @@ const Sidebar = () => {
         </div>
         <EmailModal show={emailshow} onClose={()=> setEmailShow(false)}/>
 
-      <div className='section'>
+      <div className='section border-bootom'>
         <div className='section-title'>Emails</div>
         <div className='item active'><span><HiOutlineInbox />Inbox</span> <span className="count">56</span></div>
         <div className='item'><span><FaRegStar />Starred</span> <span >46</span></div>
@@ -53,7 +53,7 @@ const Sidebar = () => {
         <div className='item' onClick={() => setshowMore(prev => !prev)}>{showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />} {showMore && <FaAngleUp /> } </div>
       </div>
         
-      <div className='section'>
+      <div className='section border-bootom'>
         <div className='section-title'>Labels <div className='plus'><FaSquarePlus /></div></div>
         <div className='label'> <input type="checkbox"   className='dot team' /> Team Events</div>
         <div className='label'> <input type="checkbox" className='dot work' /> Work</div>
@@ -66,7 +66,7 @@ const Sidebar = () => {
         <div className='item' onClick={()=> setshowMores(prev => !prev)}>{showMores ? "Show Less" : "Show More"}{!showMores && <FaAngleDown/>} {showMores && <FaAngleUp/>}</div>
       </div>
 
-      <div className='section'>
+      <div className='section border-bootom'>
         <div className='section-title'>Folders <div className='plus'><FaSquarePlus /></div></div>
         <div className='label'><FaFolder className='projects'/> Projects</div>
         <div className='label'><FaFolder className='personal'/> Personal</div>

@@ -6,7 +6,7 @@
     font-family: 'Poppins', sans-serif;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
 .user-box {
@@ -164,4 +164,8 @@
 .projectk{
     font-size: large;
     color: rgb(255, 94, 0);
+}
+.border-bootom{
+    border-bottom: 1px solid #e8e9eb;
+    padding-bottom: 18px;
 }
