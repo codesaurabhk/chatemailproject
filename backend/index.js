@@ -4,6 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./src/config/db");
+const emailrouter = require("./src/routes/emailroutes");
+
 
 
 
@@ -16,6 +18,9 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+
+// email api
+app.use("/api/email", emailrouter)
 
 app.get('/', (req, res) => {
   res.send('Backend is running!');

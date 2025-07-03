@@ -13,9 +13,12 @@ import { FaSquarePlus } from "react-icons/fa6";
 import { useState } from 'react';
 import { FaFolder } from "react-icons/fa";
 
+import { useState } from 'react';
+import EmailModal from '../EmailModal/EmailModal';
 
 
 const Sidebar = () => {
+  const [emailshow, setEmailShow] = useState(false)
     const [showMore, setshowMore] = useState(false);
     const [showMores, setshowMores] = useState(false);
     const [showMoref, setshowMoref] = useState(false);
@@ -29,7 +32,10 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className='compose'><FaRegEdit />Compose</div>
+      <div className='compose' onClick={()=> setEmailShow(true)}>
+        <FaRegEdit />Compose
+        </div>
+        <EmailModal show={emailshow} onClose={()=> setEmailShow(false)}/>
 
       <div className='section'>
         <div className='section-title'>Emails</div>

@@ -3,6 +3,7 @@
 .mainemailmessage {
     background-color: white;
      padding: 10px 20px;
+     flex-grow: 1;
 }
 .header {
     display: flex;
