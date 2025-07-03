@@ -3,6 +3,16 @@ import React, {useState, useRef} from "react";
 import "../EmailModal/EmailModal.css";
 import axios from 'axios'
 import EmojiPicker from 'emoji-picker-react';
+import { RiAttachment2 } from "react-icons/ri";
+import { HiOutlinePhotograph } from "react-icons/hi";
+import { MdOutlineModeEdit } from "react-icons/md";
+import { AiOutlineLink } from "react-icons/ai";
+import { CiFaceSmile } from "react-icons/ci";
+import { CiCalendar } from "react-icons/ci";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { MdOutlineEditCalendar } from "react-icons/md";
+import { FaMinus } from "react-icons/fa";
+import { GoScreenFull } from "react-icons/go";
 
 const EmailModal = ({ show, onClose }) => {
     const [showCc, setShowCc] = useState(false);
@@ -74,14 +84,14 @@ const EmailModal = ({ show, onClose }) => {
       <div className="email-modal">
         <div className="modal-header">
           <span>Compose New Email</span>
-          <button className="close-btn" onClick={onClose}>✕</button>
+          <button className="close-btn" onClick={onClose}> <button className="btns minus"><FaMinus /></button> <button className="btns minus"><GoScreenFull /></button> ✕</button>
         </div>
         <div className="modal-body">
           <div className="to-field">
-            <label>To</label>
+            <label >To</label>
             <input type="email" defaultValue="Angela Thomas" value={to} onChange={(e) => setTo(e.target.value)} />
              <span className="cc-bcc" onClick={()=> setShowCc(!showCc)}>Cc</span>
-              <span style={{ marginLeft: "10px" }} className="cc-bcc" onClick={()=> setShowBcc(!showBcc)}>Bcc</span>
+              <span style={{ marginLeft: "10px" }} className="cc-bcc " onClick={()=> setShowBcc(!showBcc)}>Bcc</span>
           </div>
           {/* for cc */}
           {showCc && (
@@ -104,10 +114,11 @@ const EmailModal = ({ show, onClose }) => {
         </div>
         <div className="modal-footer">
           <div className="footer-icons">
-            <button onClick={handleAttachmentClick}>📎</button>
-            <button onClick={() => imageInputRef.current.click()}>📷</button>
-            <button>📁</button>
-            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
+            <button onClick={handleAttachmentClick}><RiAttachment2 /></button>
+            <button onClick={() => imageInputRef.current.click()}><HiOutlinePhotograph /></button>
+            <button><AiOutlineLink /></button>
+            <button><MdOutlineModeEdit /></button>
+            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}><CiFaceSmile /></button>
 
             {/* for handle input */}
             <input type="file" multiple style={{display:'none'}} ref={fileInputRef} onChange={handleFileChange}/>
@@ -120,7 +131,12 @@ const EmailModal = ({ show, onClose }) => {
                 </div>
             )}
           </div>
-          <button className="send-btn" onClick={handleSend}>Send ➜</button>
+          <div>
+            <button className="btns"><MdOutlineEditCalendar /></button>
+            <button className="btns"><RiDeleteBinLine /></button>
+             <button className="send-btn" onClick={handleSend}>Send ➜</button>
+          </div>
+          
         </div>
       </div>
     </div>
