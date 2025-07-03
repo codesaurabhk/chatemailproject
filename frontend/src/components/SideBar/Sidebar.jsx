@@ -46,7 +46,7 @@ const Sidebar = () => {
         
         <div className='item' onClick={() => setshowMore(prev => !prev)}>{showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />} {showMore && <FaAngleUp /> } </div>
       </div>
-
+        
       <div className='section'>
         <div className='section-title'>Labels <div className='plus'><FaSquarePlus /></div></div>
         <div className='label'> <input type="checkbox"   className='dot team' /> Team Events</div>
