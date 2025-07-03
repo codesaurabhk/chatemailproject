@@ -10,7 +10,6 @@ import { ImCompass } from "react-icons/im";
 import { PiUploadLight } from "react-icons/pi";
 import { FaAngleDown,FaAngleUp } from "react-icons/fa6";
 import { FaSquarePlus } from "react-icons/fa6";
-import { useState } from 'react';
 import { FaFolder } from "react-icons/fa";
 
 import { useState } from 'react';

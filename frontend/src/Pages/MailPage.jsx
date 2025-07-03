@@ -11,4 +11,4 @@ const MailPage = () => {
   )
 }
 
-export default MailPage
+export default MailPage;
