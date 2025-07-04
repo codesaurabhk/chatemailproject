@@ -10,7 +10,7 @@ const emailSchema = new mongoose.Schema(
         body:{type:String},
        attachments:{type:[String], default:[]}, //stores file names or URLs
         date:{type:Date, default:Date.now},
-        image:{type: String},
+        image:{type: [String], default:[]},
         name:{type:String},
         starred:{type:Boolean, default: false},
         bin:{type:Boolean, default:false},

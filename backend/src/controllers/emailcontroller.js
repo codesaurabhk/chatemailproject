@@ -22,5 +22,17 @@ const receiveEmail = async (req, res) => {
         res.status(500).json({success:false, message: "Failed to fetch emails", error: error.message})
     }
 }
+const deleteEmail = async (req, res) => {
+    try {
+    const id = req.params.id;
+    console.log('id to delete', id)
+    const data = await EmailModal.findById(id)
+    if(!data) {
+        return res.status(404).json({success: false, message: "Record not found"})
+    }
+    }catch(error) {
+    return res.json({})
+    }
+}
 
-module.exports = {sendEmail, receiveEmail};
+module.exports = {sendEmail, receiveEmail, deleteEmail};

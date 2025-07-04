@@ -223,7 +223,41 @@ const EmailMessages = () => {
       const fetchEmail = async () => {
         try {
           const res = await axios.get("http://localhost:5000/api/email/receive")
-          setEmails(res.data.data)
+         const formattedData = res.data.data.map((email) => {
+          const name = email.name;
+          const initials = name.split(" ").map((word) => word[0]).join("").toUpperCase().slice(0,2);
+          return {
+            ...email,
+            sender:{
+              name,
+              initials,
+              backgroundColor:"#5e35b1"
+            },
+            subject:email.subject,
+            messagePreview:email.body.slice(0, 50) + "...",  //trim preview
+            time: new Date(email.createdAt).toLocaleTimeString([], {
+              hour:"2-digit",
+              minute:"2-digit"
+            }),
+            status:{dotColor:"red"},
+            folders:{
+              galleryCount:email.attachments?.length || 0,
+            },
+            tags:{
+              starred: email.starred,
+              labels:[
+                {
+                name: "External",
+                color:"#ffa726",
+                backgroundColor:"#fff3e0"
+                }
+              ],
+              extraLabelCount:0
+            }
+          }
+         });
+         setEmails(formattedData)
+         console.log('formattedDataemails', formattedData)
         }catch(error) {
           console.error("Failed to fetch emails", error)
         }
@@ -240,7 +274,7 @@ const EmailMessages = () => {
             Inbox
           </span>
           <span className="twothreemail">
-            2345 Emails{" "}
+            {emails.length}Emails{" "}
             <span
               style={{
                 fontSize: "22px",
@@ -275,13 +309,13 @@ const EmailMessages = () => {
       </div>
       {/* email message div */}
       <>
-      {EmailData.filter((email) => 
+      {emails.filter((email) => 
       email.sender.name.toLowerCase().includes(search.toLowerCase()) || 
       email.subject.toLowerCase().includes(search.toLowerCase()) ||
       email.messagePreview.toLowerCase().includes(search.toLowerCase())
       ).map((email) => (
-      <div className="justinmaindiv">
-        <div className="justinleftrightmaindiv">
+      <div className="justinmaindiv" key={email._id}>
+        <div className="justinleftrightmaindiv" style={{cursor:'pointer'}}>
           {/* left */}
           <div className="justinmaindivleftdiv">
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -309,7 +343,7 @@ const EmailMessages = () => {
                   marginBottom: "5px",
                 }}
               >
-                {email.sender.name}
+                {email.to[0]}
               </span>
               <span style={{ color: "#636363", fontSize: "16px" }}>
                 {email.subject}
@@ -349,11 +383,12 @@ const EmailMessages = () => {
             <span>
               <AiOutlineFolderOpen />
             </span>
-            <span>3</span>
+            <span>{email.attachments.length}</span>
             <span>
               <GrGallery />
             </span>
-            <span>{email.folders.galleryCount}</span>
+            <span>{email.image?.length}</span>
+            {console.log('imgg length',email.image?.length )}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             {email.tags.starred && (
