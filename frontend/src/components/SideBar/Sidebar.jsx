@@ -14,6 +14,7 @@ import { FaFolder } from "react-icons/fa";
 
 
 import EmailModal from '../EmailModal/EmailModal';
+import { useState } from 'react';
 
 
 const Sidebar = () => {

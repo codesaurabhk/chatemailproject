@@ -19,11 +19,12 @@ const EmailModal = ({ show, onClose }) => {
      const [showBcc, setShowBcc] = useState(false);
      const [cc, setCc] = useState("");
      const [bcc, setBcc] = useState("");
-
     const [to, setTo] = useState("")
     const [subject, setSubject] = useState("")
     const [body, setBody] = useState("")
     const [attachments, setAttachments] = useState([])
+    const [isExpanded, setIsExpanded] = useState(false);
+
     
 
     const fileInputRef = useRef();
@@ -79,13 +80,42 @@ const EmailModal = ({ show, onClose }) => {
             alert("Failed to send email")
         }
     }
+    const toggleExpanded = () => {
+  setIsExpanded(prev => !prev);
+};
+const handleDelete = () => {
+  // Clear all input fields
+  setTo("");
+  setSubject("");
+  setBody("");
+  setCc("");
+  setBcc("");
+  setAttachments([]);
+  setShowCc(false);
+  setShowBcc(false);
+  setShowEmojiPicker(false);
+  setIsExpanded(false); // Optional: shrink modal back
+
+  // Close the modal
+  onClose();
+};
+
+
   return (
     <div className="modal-overlay">
-      <div className="email-modal">
+     <div className={`email-modal ${isExpanded ? "expanded-modal" : ""}`}>
+
+
+       
         <div className="modal-header">
-          <span>Compose New Email</span>
-          <button className="close-btn" onClick={onClose}> <button className="btns minus"><FaMinus /></button> <button className="btns minus"><GoScreenFull /></button> ✕</button>
-        </div>
+  <span>Compose New Email</span>
+  <div className="header-actions">
+    <button className="btns minus" onClick={onClose}><FaMinus /></button>
+    <button className="btns minus" onClick={toggleExpanded}><GoScreenFull /></button>
+    <button className="btns minus" onClick={onClose}>✕</button>
+  </div>
+</div>
+
         <div className="modal-body">
           <div className="to-field">
             <label >To</label>
@@ -107,7 +137,8 @@ const EmailModal = ({ show, onClose }) => {
                 <input type="email" placeholder="Add Bcc" value={bcc} onChange={(e) => setBcc(e.target.value)}/>
             </div>
           ) }
-          <div style={{width:'90%'}}>
+          <div  >
+             <label htmlFor="">Subject  </label>
           <input type="text" className="subject" placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
           <textarea className="email-body" placeholder="Compose Email" value={body} onChange={(e) => setBody(e.target.value)} />
           </div>
@@ -133,7 +164,7 @@ const EmailModal = ({ show, onClose }) => {
           </div>
           <div>
             <button className="btns"><MdOutlineEditCalendar /></button>
-            <button className="btns"><RiDeleteBinLine /></button>
+            <button onClick={handleDelete} className="btns"><RiDeleteBinLine /></button>
              <button className="send-btn" onClick={handleSend}>Send ➜</button>
           </div>
           
