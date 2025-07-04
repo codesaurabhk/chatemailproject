@@ -1,4 +1,3 @@
-// src/components/EmailModal.jsx
 import React, {useState, useRef} from "react";
 import "../EmailModal/EmailModal.css";
 import axios from 'axios'
@@ -8,11 +7,13 @@ import { HiOutlinePhotograph } from "react-icons/hi";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { AiOutlineLink } from "react-icons/ai";
 import { CiFaceSmile } from "react-icons/ci";
-import { CiCalendar } from "react-icons/ci";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaMinus } from "react-icons/fa";
 import { GoScreenFull } from "react-icons/go";
+const defaultSignature = "\n\nRegards,\nSaurabh Kumar";
+
+
 
 const EmailModal = ({ show, onClose }) => {
     const [showCc, setShowCc] = useState(false);
@@ -24,6 +25,17 @@ const EmailModal = ({ show, onClose }) => {
     const [body, setBody] = useState("")
     const [attachments, setAttachments] = useState([])
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showLinkInput, setShowLinkInput] = useState(false);
+const [linkText, setLinkText] = useState("");
+const [linkUrl, setLinkUrl] = useState("");
+const [showCalendar, setShowCalendar] = useState(false);
+
+const [signature, setSignature] = useState(defaultSignature);
+const [showSignatureManager, setShowSignatureManager] = useState(false);
+const [useSignature, setUseSignature] = useState(true);
+
+
+    
 
     
 
@@ -63,7 +75,7 @@ const EmailModal = ({ show, onClose }) => {
                 to:[to], //send an array
                 from: "akashkumar5494@gmail.com",
                 subject,
-                body,
+                body: useSignature ? body + signature : body,
                 cc:cc ? [cc] : [],
                 bcc:bcc ? [bcc] : [],
                 attachments,
@@ -98,6 +110,22 @@ const handleDelete = () => {
 
   // Close the modal
   onClose();
+};
+
+  const handleInsertLink = () => {
+  if (!linkText || !linkUrl) {
+    alert("Please enter both text and URL");
+    return;
+  }
+
+  // Append formatted link to body
+  const formattedLink = `${linkText} (${linkUrl})`;
+  setBody(prev => prev + formattedLink);
+
+  // Reset
+  setShowLinkInput(false);
+  setLinkText("");
+  setLinkUrl("");
 };
 
 
@@ -147,8 +175,8 @@ const handleDelete = () => {
           <div className="footer-icons">
             <button onClick={handleAttachmentClick}><RiAttachment2 /></button>
             <button onClick={() => imageInputRef.current.click()}><HiOutlinePhotograph /></button>
-            <button><AiOutlineLink /></button>
-            <button><MdOutlineModeEdit /></button>
+            <button onClick={() => setShowLinkInput(prev => !prev)}><AiOutlineLink /></button>
+            <button onClick={() => setShowSignatureManager(prev => !prev)}><MdOutlineModeEdit /></button>
             <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}><CiFaceSmile /></button>
 
             {/* for handle input */}
@@ -161,14 +189,73 @@ const handleDelete = () => {
                     <EmojiPicker onEmojiClick={handleEmojiClick}/>
                 </div>
             )}
+
+            {showSignatureManager && (
+  <div className="signature-manager">
+    <label>Signature:</label>
+    <textarea
+      rows={3}
+      value={signature}
+      onChange={(e) => setSignature(e.target.value)}
+    />
+    <div className="signature-options">
+      <label>
+        <input
+          type="radio"
+          name="sig"
+          checked={useSignature}
+          onChange={() => setUseSignature(true)}
+        />
+        Use this signature
+      </label>
+      <label style={{ marginLeft: "20px" }}>
+        <input
+          type="radio"
+          name="sig"
+          checked={!useSignature}
+          onChange={() => setUseSignature(false)}
+        />
+        No signature
+      </label>
+    </div>
+  </div>
+)}
+
+
+
           </div>
+         
+
           <div>
-            <button className="btns"><MdOutlineEditCalendar /></button>
+            <button className="btns" onClick={() => setShowCalendar(prev => !prev)}><MdOutlineEditCalendar /></button>
             <button onClick={handleDelete} className="btns"><RiDeleteBinLine /></button>
              <button className="send-btn" onClick={handleSend}>Send ➜</button>
           </div>
           
         </div>
+        {showCalendar && (
+  <div className="calendar-popup">
+    <input type="date" />
+  </div>
+)}
+
+         {showLinkInput && (
+  <div className="link-input-box">
+    <input
+      type="text"
+      placeholder="Text to display"
+      value={linkText}
+      onChange={(e) => setLinkText(e.target.value)}
+    />
+    <input
+      type="text"
+      placeholder="URL"
+      value={linkUrl}
+      onChange={(e) => setLinkUrl(e.target.value)}
+    />
+    <button onClick={handleInsertLink}>Insert</button>
+  </div>
+)}
       </div>
     </div>
   );
