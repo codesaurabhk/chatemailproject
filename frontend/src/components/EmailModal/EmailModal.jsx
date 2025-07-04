@@ -73,7 +73,7 @@ const [useSignature, setUseSignature] = useState(true);
         try {
             const res = await axios.post("http://localhost:5000/api/email/send", {
                 to:[to], //send an array
-                from: "akashkumar5494@gmail.com",
+                from: "",
                 subject,
                 body: useSignature ? body + signature : body,
                 cc:cc ? [cc] : [],
