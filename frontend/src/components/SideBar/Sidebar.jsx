@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import EmailModal from '../EmailModal/EmailModal';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+import { useState } from 'react';
 
 
 const Sidebar = () => {
