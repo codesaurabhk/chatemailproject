@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 
-const sendEmail = async (req, res) => {
+const sendEmail = async (req, res) => { 
   try {
     const {
       to,
@@ -48,7 +48,7 @@ const sendEmail = async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
       tls: {
-        rejectUnauthorized: false, // Allow self-signed certs
+        rejectUnauthorized: false, 
       },
     });
 
@@ -96,25 +96,18 @@ const receiveEmail = async (req, res) => {
       });
   }
 };
-const deleteEmail = async (req, res) => {
-  try {
-    const id = req.params.id;
-    console.log("id to delete", id);
-    const data = await EmailModal.findById(id);
-    if (!data) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Record not found" });
-    }
-  } catch (error) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "FAiled to delete email",
-        error: error.message,
-      });
-  }
-};
 
-module.exports = { sendEmail, receiveEmail, deleteEmail };
+const deleteEmail = async (req, res) => {
+    try {
+    const id = req.params.id;
+    console.log('id to delete', id)
+    const data = await EmailModal.findById(id)
+    if(!data) {
+        return res.status(404).json({success: false, message: "Record not found"})
+    }
+    }catch(error) {
+    return res.status(500).json({success:false, message: "FAiled to delete email", error: error.message})
+    }
+}
+
+module.exports = {sendEmail, receiveEmail, deleteEmail};
