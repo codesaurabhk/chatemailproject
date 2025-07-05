@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer")
 const fs = require("fs");
 const path = require("path");
 
- const sendEmail = async(req, res) => {
+ const sendEmail = async(req, res) => { 
     try {
         const {to, cc, bcc, from, subject, body, attachments, date, image, name, starred, bin, type} = req.body;
         
@@ -21,7 +21,7 @@ const path = require("path");
 
             },
             tls: {
-    rejectUnauthorized: false, // Allow self-signed certs
+    rejectUnauthorized: false, 
   },
         })
 
@@ -55,17 +55,29 @@ const receiveEmail = async (req, res) => {
         res.status(500).json({success:false, message: "Failed to fetch emails", error: error.message})
     }
 }
+
 const deleteEmail = async (req, res) => {
-    try {
-    const id = req.params.id;
-    console.log('id to delete', id)
-    const data = await EmailModal.findById(id)
-    if(!data) {
-        return res.status(404).json({success: false, message: "Record not found"})
+  try {
+    const { ids } = req.body;            // expect an array of Mongo _id strings
+
+    if (!ids || !ids.length) {
+      return res.status(400).json({ success: false, message: "No ids provided" });
     }
-    }catch(error) {
-    return res.status(500).json({success:false, message: "FAiled to delete email", error: error.message})
-    }
-}
+
+    const result = await EmailModal.deleteMany({ _id: { $in: ids } });
+
+    return res.status(200).json({
+      success: true,
+      deletedCount: result.deletedCount,
+      message: `${result.deletedCount} email(s) deleted`
+    });
+  } catch (error) {
+    console.error("DELETE error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to delete email(s)", error: error.message });
+  }
+};
+
 
 module.exports = {sendEmail, receiveEmail, deleteEmail};
