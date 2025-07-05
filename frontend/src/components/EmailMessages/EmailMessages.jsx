@@ -11,9 +11,10 @@ import { AiOutlineFolderOpen } from "react-icons/ai";
 import { GrGallery } from "react-icons/gr";
 import { AiFillStar } from "react-icons/ai";
 import EmailData from "../EmailMessages/emailData.json"
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FaReply } from "react-icons/fa";
 
 
 
@@ -21,6 +22,10 @@ const EmailMessages = () => {
   const [search, setSearch] = useState("");
   const [emails, setEmails] = useState([])
   const [selectedEmails, setSelectedEmails] = useState([]);
+  const [menuOpenId, setMenuOpenId] = useState(null);
+
+
+  const menuRef = useRef();
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -70,8 +75,8 @@ const EmailMessages = () => {
   const handleDeleteSelected = async () => {
     try {
       await axios.post("http://localhost:5000/api/email/delete", {
-      ids: selectedEmails
-    });
+        ids: selectedEmails
+      });
       setEmails(prev => prev.filter(email => !selectedEmails.includes(email._id)));
       setSelectedEmails([]);
     } catch (error) {
@@ -79,6 +84,24 @@ const EmailMessages = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/api/email/delete", { ids: [id] });
+      setEmails((prev) => prev.filter((email) => email._id !== id));
+      setMenuOpenId(null);
+    } catch (err) {
+      console.error("Failed to delete email", err);
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpenId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="mainemailmessage">
@@ -188,9 +211,29 @@ const EmailMessages = () => {
               </div>
               {/* right */}
               <div className="justinmaindivrightdiv">
-                <span>
-                  <HiOutlineDotsHorizontal />
+                <span onClick={() => setMenuOpenId(email._id)}>
+                  <div style={{ position: "relative" }}>
+                    <span
+                      onClick={() =>
+                        setMenuOpenId(menuOpenId === email._id ? null : email._id)
+                      }
+                      className="three-dot-icon"
+                    >
+                      <HiOutlineDotsHorizontal />
+                    </span>
+
+                    {menuOpenId === email._id && (
+                      <div className="custom-popup-menu" ref={menuRef}>
+                        <div onClick={() => handleReply(email)}><FaReply /> Reply</div>
+                        <div onClick={() => handleDelete(email._id)}> <RiDeleteBinLine /> Delete</div>
+                      </div>
+                    )}
+                  </div>
+
                 </span>
+
+
+
                 <span
                   style={{
                     fontSize: "22px",
@@ -198,6 +241,7 @@ const EmailMessages = () => {
                     fontWeight: "bold",
                   }}
                 >
+
                   <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
                 </span>
                 <span style={{ marginBottom: "5px" }}>{email.time}</span>
