@@ -1,3 +1,204 @@
+// import React, { useState } from "react";
+// import "../EmailMessages/EmailMessages.css";
+// import { IoIosSearch, IoMdSettings } from "react-icons/io";
+// import { RiFilterOffLine } from "react-icons/ri";
+// import { BiRefresh } from "react-icons/bi";
+// import { AiOutlineSetting } from "react-icons/ai";
+// import { BsDot } from "react-icons/bs";
+// import { HiOutlineDotsHorizontal } from "react-icons/hi";
+// import { AiOutlineFolderOpen } from "react-icons/ai";
+// import { GrGallery } from "react-icons/gr";
+// import { AiFillStar } from "react-icons/ai";
+// import EmailData from "../EmailMessages/emailData.json"
+// import { useEffect } from "react";
+// import axios from "axios";
+
+// const EmailMessages = () => {
+//     const [search, setSearch] = useState("");
+//     const [emails, setEmails] = useState([])
+
+//     useEffect(() => {
+//       const fetchEmail = async () => {
+//         try {
+//           const res = await axios.get("http://localhost:5000/api/email/receive")
+//           setEmails(res.data.data)
+//         }catch(error) {
+//           console.error("Failed to fetch emails", error)
+//         }
+//       }
+//       fetchEmail();
+//     }, []);
+
+//   return (
+//     <div className="mainemailmessage">
+//       <div className="header">
+//         {/* inbox */}
+//         <div className="inbox">
+//           <span style={{ color: "black", fontSize: "18px", fontWeight: 600 }}>
+//             Inbox
+//           </span>
+//           <span className="twothreemail">
+//             2345 Emails{" "}
+//             <span
+//               style={{
+//                 fontSize: "22px",
+//                 borderRadius: "50%",
+//                 fontWeight: "bold",
+//               }}
+//             >
+//               <BsDot style={{ color: "#fba64b", marginTop: "10px" }} />
+//             </span>{" "}
+//             56 Unread
+//           </span>
+//         </div>
+//         {/* filter */}
+//         <div className="filter">
+//           <span className="searchinputdiv">
+//             <span style={{ marginTop: "5px" }}>
+//               <IoIosSearch />
+//             </span>
+//             <input
+//               className="searchtext"
+//               type="text"
+//               placeholder="Search Email"
+//               value={search} onChange={(e) => setSearch(e.target.value)}
+//             />
+//           </span>
+//           <span className="settingrefreshdiv">
+//             <RiFilterOffLine />
+//             <AiOutlineSetting />
+//             <BiRefresh onClick={() => window.location.reload()} />
+//           </span>
+//         </div>
+//       </div>
+//       {/* email message div */}
+//       <>
+//       {emails.filter((email) => 
+//       email.name.toLowerCase().includes(search.toLowerCase()) || 
+//       email.subject.toLowerCase().includes(search.toLowerCase()) ||
+//       email.body.toLowerCase().includes(search.toLowerCase())
+//       ).map((email) => (
+//       <div className="justinmaindiv">
+//         <div className="justinleftrightmaindiv">
+//           {/* left */}
+//           <div className="justinmaindivleftdiv">
+//             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+//               <input
+//                 type="checkbox"
+//                 style={{ width: "18px", height: "18px", borderRadius: "5px" }}
+//               />
+//               <span
+//                 style={{
+//                   backgroundColor: '',
+//                   color: "white",
+//                   borderRadius: "50%",
+//                   width:"40px", height:"40px", display:'flex', alignItems:'center', justifyContent:'center', objectFit:'contain'
+//                 }}
+//               >
+//                 {}
+//               </span>
+//             </div>
+//             <div style={{ display: "flex", flexDirection: "column" }}>
+//               <span
+//                 style={{
+//                   color: "",
+//                   fontSize: "18px",
+//                   fontWeight: 600,
+//                   marginBottom: "5px",
+//                 }}
+//               >
+//                 {email.name}
+//               </span>
+//               <span style={{ color: "#636363", fontSize: "16px" }}>
+//                 {email.subject}
+//               </span>
+//               <span style={{ color: "#636363", fontSize: "16px" }}>
+//                {email.body}
+//               </span>
+//             </div>
+//           </div>
+//           {/* right */}
+//           <div className="justinmaindivrightdiv">
+//             <span>
+//               <HiOutlineDotsHorizontal />
+//             </span>
+//             <span
+//               style={{
+//                 fontSize: "22px",
+//                 borderRadius: "50%",
+//                 fontWeight: "bold",
+//               }}
+//             >
+//               <BsDot style={{ color: 'red', fontSize: "30px" }} />
+//             </span>
+//             <span style={{ marginBottom: "5px" }}>{}</span>
+//           </div>
+//         </div>
+//         {/* folder gallery */}
+//         <div className="foldergallerydiv">
+//           <div
+//             style={{
+//               display: "flex",
+//               gap: "10px",
+//               color: "#676969",
+//               fontWeight: 600,
+//             }}
+//           >
+//             <span>
+//               <AiOutlineFolderOpen />
+//             </span>
+//             <span>3</span>
+//             <span>
+//               <GrGallery />
+//             </span>
+//             <span>{}</span>
+//           </div>
+//           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+//             <span>
+//               <AiFillStar style={{ fontSize: "15px", color: "#fba64b" }} />
+//             </span>
+//             <span
+//               style={{
+//                 padding: "4px 7px",
+//                 backgroundColor: '',
+//                 borderRadius: "5px",
+//                 color: '',
+//               }}
+//             >
+//               <input type="checkbox" />
+//               <span>{email.name}</span>
+//             </span>
+//             <span
+//               style={{
+//                 padding: "4px 7px",
+//                 backgroundColor: "#010c27",
+//                 borderRadius: "45%",
+//                 color: "white",
+//                 fontSize: "12px",
+//               }}
+//             >
+//               +{}
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+//       ))}
+//       </>   
+//     </div>
+//   );
+// };
+
+// export default EmailMessages;
+
+
+
+
+
+
+
+
+
+
 
 import React, { useState } from "react";
 import "../EmailMessages/EmailMessages.css";
@@ -10,9 +211,15 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { AiOutlineFolderOpen } from "react-icons/ai";
 import { GrGallery } from "react-icons/gr";
 import { AiFillStar } from "react-icons/ai";
+<<<<<<< HEAD
 import EmailData from "../EmailMessages/emailData.json"
 import { useEffect, useRef } from "react";
+=======
+// import EmailData from "../EmailMessages/emailData.json"
+import { useEffect } from "react";
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 import axios from "axios";
+import EmailDetail from "../EmailDetails/EmailDetail";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaReply } from "react-icons/fa";
 
@@ -20,12 +227,19 @@ import { FaReply } from "react-icons/fa";
 
 const EmailMessages = () => {
   const [search, setSearch] = useState("");
+<<<<<<< HEAD
   const [emails, setEmails] = useState([])
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [menuOpenId, setMenuOpenId] = useState(null);
 
 
   const menuRef = useRef();
+=======
+  const [emails, setEmails] = useState([]);
+
+  const [selectedEmail, setSelectedEmail] = useState(null)
+
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -39,14 +253,13 @@ const EmailMessages = () => {
             sender: {
               name,
               initials,
-              backgroundColor: "#5e35b1"
+              backgroundColor:  "#5e35b1"
             },
             subject: email.subject,
             messagePreview: email.body.slice(0, 50) + "...",  //trim preview
-            time: new Date(email.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit"
-            }),
+            time: new Intl.DateTimeFormat('en-GB', {
+              day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+            }).format(new Date(email.createdAt)),
             status: { dotColor: "red" },
             folders: {
               galleryCount: email.attachments?.length || 0,
@@ -72,6 +285,7 @@ const EmailMessages = () => {
     }
     fetchEmail();
   }, []);
+<<<<<<< HEAD
   const handleDeleteSelected = async () => {
     try {
       await axios.post("http://localhost:5000/api/email/delete", {
@@ -102,7 +316,12 @@ const EmailMessages = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+=======
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 
+  const handleBackToInbox = () => {
+    setSelectedEmail(null)
+  }
   return (
     <div className="mainemailmessage">
       <div className="header">
@@ -157,58 +376,71 @@ const EmailMessages = () => {
       </div>
       {/* email message div */}
       <>
-        {emails.filter((email) =>
-          email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
-          email.subject.toLowerCase().includes(search.toLowerCase()) ||
-          email.messagePreview.toLowerCase().includes(search.toLowerCase())
-        ).map((email) => (
-          <div className={`justinmaindiv ${selectedEmails.includes(email._id) ? "selected-email" : ""}`} key={email._id}>
-            <div className="justinleftrightmaindiv" style={{ cursor: 'pointer' }}>
-              {/* left */}
-              <div className="justinmaindivleftdiv">
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedEmails.includes(email._id)}
-                    onChange={() => {
-                      if (selectedEmails.includes(email._id)) {
-                        setSelectedEmails(selectedEmails.filter(id => id !== email._id));
-                      } else {
-                        setSelectedEmails([...selectedEmails, email._id]);
-                      }
-                    }}
-                    style={{ width: "18px", height: "18px", borderRadius: "5px" }}
-                  />
-                  <span
-                    style={{
-                      backgroundColor: email.sender.backgroundColor,
-                      color: "white",
-                      borderRadius: "50%",
-                      width: "40px", height: "40px", display: 'flex', alignItems: 'center', justifyContent: 'center', objectFit: 'contain'
-                    }}
-                  >
-                    {email.sender.initials}
-                  </span>
+        {selectedEmail ? (
+          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} />
+        ) : (
+          emails.filter((email) =>
+            email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
+            email.subject.toLowerCase().includes(search.toLowerCase()) ||
+            email.messagePreview.toLowerCase().includes(search.toLowerCase())
+          ).map((email) => (
+            <div className="justinmaindiv" key={email._id} onClick={() => setSelectedEmail(email)}>
+              <div className="justinleftrightmaindiv" style={{ cursor: 'pointer' }}>
+                {/* left */}
+                <div className="justinmaindivleftdiv">
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <input
+                      type="checkbox"
+                      style={{ width: "18px", height: "18px", borderRadius: "5px" }}
+                    />
+                    <span
+                      style={{
+                        backgroundColor: email.sender.backgroundColor,
+                        color: "white",
+                        borderRadius: "50%",
+                        width: "40px", height: "40px", display: 'flex', alignItems: 'center', justifyContent: 'center', objectFit: 'contain'
+                      }}
+                    >
+                      {email.sender.initials}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span
+                      style={{
+                        color: "",
+                        fontSize: "18px",
+                        fontWeight: 600,
+                        marginBottom: "5px",
+                      }}
+                    >
+                      {email.to[0]}
+                    </span>
+                    <span style={{ color: "#636363", fontSize: "16px" }}>
+                      {email.subject}
+                    </span>
+                    <span style={{ color: "#636363", fontSize: "16px" }}>
+                      {email.messagePreview}
+                    </span>
+                  </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                {/* right */}
+                <div className="justinmaindivrightdiv">
+                  <span>
+                    <HiOutlineDotsHorizontal />
+                  </span>
                   <span
                     style={{
-                      color: "",
-                      fontSize: "18px",
-                      fontWeight: 600,
-                      marginBottom: "5px",
+                      fontSize: "22px",
+                      borderRadius: "50%",
+                      fontWeight: "bold",
                     }}
                   >
-                    {email.to[0]}
+                    <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
                   </span>
-                  <span style={{ color: "#636363", fontSize: "16px" }}>
-                    {email.subject}
-                  </span>
-                  <span style={{ color: "#636363", fontSize: "16px" }}>
-                    {email.messagePreview}
-                  </span>
+                  <span style={{ marginBottom: "5px" }}>{email.time}</span>
                 </div>
               </div>
+<<<<<<< HEAD
               {/* right */}
               <div className="justinmaindivrightdiv">
                 <span onClick={() => setMenuOpenId(email._id)}>
@@ -235,12 +467,19 @@ const EmailMessages = () => {
 
 
                 <span
+=======
+              {/* folder gallery */}
+              <div className="foldergallerydiv">
+                <div
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   style={{
-                    fontSize: "22px",
-                    borderRadius: "50%",
-                    fontWeight: "bold",
+                    display: "flex",
+                    gap: "10px",
+                    color: "#676969",
+                    fontWeight: 600,
                   }}
                 >
+<<<<<<< HEAD
 
                   <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
                 </span>
@@ -269,38 +508,53 @@ const EmailMessages = () => {
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 {email.tags.starred && (
+=======
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   <span>
-                    <AiFillStar style={{ fontSize: "15px", color: "#fba64b" }} />
+                    <AiOutlineFolderOpen />
                   </span>
-                )}
-                {email.tags.labels.map((label, index) => (
-                  <span key={index}
+                  <span>{email.attachments.length}</span>
+                  <span>
+                    <GrGallery />
+                  </span>
+                  <span>{email.image?.length}</span>
+                  {console.log('imgg length', email.image?.length)}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  {email.tags.starred && (
+                    <span>
+                      <AiFillStar style={{ fontSize: "15px", color: "#fba64b" }} />
+                    </span>
+                  )}
+                  {email.tags.labels.map((label, index) => (
+                    <span key={index}
+                      style={{
+                        padding: "4px 7px",
+                        backgroundColor: label.backgroundColor,
+                        borderRadius: "5px",
+                        color: label.color,
+                      }}
+                    >
+                      <input type="checkbox" />
+                      <span>{label.name}</span>
+                    </span>
+                  ))}
+                  <span
                     style={{
                       padding: "4px 7px",
-                      backgroundColor: label.backgroundColor,
-                      borderRadius: "5px",
-                      color: label.color,
+                      backgroundColor: "#010c27",
+                      borderRadius: "45%",
+                      color: "white",
+                      fontSize: "12px",
                     }}
                   >
-                    <input type="checkbox" />
-                    <span>{label.name}</span>
+                    +{email.tags.extraLabelCount}
                   </span>
-                ))}
-                <span
-                  style={{
-                    padding: "4px 7px",
-                    backgroundColor: "#010c27",
-                    borderRadius: "45%",
-                    color: "white",
-                    fontSize: "12px",
-                  }}
-                >
-                  +{email.tags.extraLabelCount}
-                </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </>
     </div>
   );

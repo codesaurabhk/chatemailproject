@@ -5,9 +5,9 @@ import { Outlet } from 'react-router-dom'
 
 const MailPage = () => {
   return (
-    <div style={{display:'flex'}}>
-      <Sidebar/>
-      <Outlet/>
+    <div style={{ display: 'flex', width: '100%' }}>
+      <Sidebar />
+      <Outlet />
       {/* <EmailMessages/> */}
     </div>
   )

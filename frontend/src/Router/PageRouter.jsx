@@ -23,7 +23,7 @@ const PageRouter = () => {
       children:[
         {
           path:'inbox',
-          element:<EmailMessages/>
+          element:<Inbox/>
         },
         {
           path:'starred',
@@ -31,7 +31,7 @@ const PageRouter = () => {
         },
         {
           path:'sent',
-          element:<Sent/>
+          element:<EmailMessages/>
         },
          {
           path:'drafts',
