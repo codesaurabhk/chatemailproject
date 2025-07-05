@@ -75,7 +75,7 @@ const [useSignature, setUseSignature] = useState(true);
                 to:[to], //send an array
                 from: "",
                 subject,
-                body: useSignature ? body + signature : body,
+                body: useSignature && !body.includes(signature) ? body + signature : body,
                 cc:cc ? [cc] : [],
                 bcc:bcc ? [bcc] : [],
                 attachments,
