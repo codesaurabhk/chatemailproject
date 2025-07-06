@@ -169,7 +169,7 @@ const EmailMessages = () => {
             email.subject.toLowerCase().includes(search.toLowerCase()) ||
             email.messagePreview.toLowerCase().includes(search.toLowerCase())
           ).map((email) => (
-            <div className="justinmaindiv" key={email._id}>
+            <div className={`justinmaindiv ${selectedEmails.includes(email._id) ? "selected-email" : ""}`} key={email._id}>
               <div className="justinleftrightmaindiv" style={{ cursor: 'pointer' }}>
                 {/* left */}
                 <div className="justinmaindivleftdiv">
