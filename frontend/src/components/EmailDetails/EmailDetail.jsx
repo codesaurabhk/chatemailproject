@@ -41,7 +41,7 @@ const EmailDetail = ({ email, onBack }) => {
                     </div>
                 </div>
                 <div className="subject-right">
-                    <span className="email-time">{new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(email.createdAt))}</span>
+                    <span className="email-time">{email.createdAt && !isNaN(new Date(email.createdAt)) ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(email.createdAt)): 'Invalid Date'}</span>
                     <span className="icon"><AiFillStar /></span>
                     <span className="icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><GrEmoji /></span>
                     <span className="icon"><LuReply /></span>
@@ -55,7 +55,7 @@ const EmailDetail = ({ email, onBack }) => {
                     <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>To: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{email.to.join(",") || "None"}</span></p>
                     <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>Cc: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{email.cc?.join(",") || "None"}</span></p>
                     <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>Bcc: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{email.bcc?.join(",") || "None"}</span></p>
-                    <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>Date: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(email.createdAt))}</span></p>
+                    <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>Date: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{email.createdAt && !isNaN(new Date(email.createdAt)) ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(email.createdAt)): 'Invalid Date'}</span></p>
                     <p style={{ fontSize: '16px', color: 'gray', fontWeight: 500, marginBottom: '5px' }}>Subject: <span style={{ fontSize: '16px', color: 'black', fontWeight: 500 }}>{email.subject}</span></p>
                 </div>
             )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../EmailMessages/EmailMessages.css";
 import { IoIosSearch, IoMdSettings } from "react-icons/io";
 import { RiFilterOffLine } from "react-icons/ri";
@@ -9,13 +9,6 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { AiOutlineFolderOpen } from "react-icons/ai";
 import { GrGallery } from "react-icons/gr";
 import { AiFillStar } from "react-icons/ai";
-<<<<<<< HEAD
-import EmailData from "../EmailMessages/emailData.json"
-import { useEffect, useRef } from "react";
-=======
-// import EmailData from "../EmailMessages/emailData.json"
-import { useEffect } from "react";
->>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 import axios from "axios";
 import EmailDetail from "../EmailDetails/EmailDetail";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -25,19 +18,14 @@ import { FaReply } from "react-icons/fa";
 
 const EmailMessages = () => {
   const [search, setSearch] = useState("");
-<<<<<<< HEAD
-  const [emails, setEmails] = useState([])
-  const [selectedEmails, setSelectedEmails] = useState([]);
-  const [menuOpenId, setMenuOpenId] = useState(null);
-
-
-  const menuRef = useRef();
-=======
   const [emails, setEmails] = useState([]);
 
-  const [selectedEmails, setSelectedEmails] = useState(null)
+  const [selectedEmails, setSelectedEmails] = useState([])
+  const [menuOpenId, setMenuOpenId] = useState(null);
 
->>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
+  const [selectedEmail, setSelectedEmail] = useState(null)
+
+  const menuRef = useRef();
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -55,9 +43,9 @@ const EmailMessages = () => {
             },
             subject: email.subject,
             messagePreview: email.body.slice(0, 50) + "...",  //trim preview
-            time: new Intl.DateTimeFormat('en-GB', {
+            time: email.createdAt && !isNaN(new Date(email.createdAt)) ? new Intl.DateTimeFormat('en-GB', {
               day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
-            }).format(new Date(email.createdAt)),
+            }).format(new Date(email.createdAt)) : 'Invalide Date',
             status: { dotColor: "red" },
             folders: {
               galleryCount: email.attachments?.length || 0,
@@ -83,39 +71,38 @@ const EmailMessages = () => {
     }
     fetchEmail();
   }, []);
-<<<<<<< HEAD
+
   const handleDeleteSelected = async () => {
     try {
       await axios.post("http://localhost:5000/api/email/delete", {
         ids: selectedEmails
       });
-      setEmails(prev => prev.filter(email => !selectedEmails.includes(email._id)));
-      setSelectedEmails([]);
+      setEmails((prev) => prev.filter((email) => !selectedEmails.includes(email._id)));
+      setSelectedEmails([])
     } catch (error) {
-      console.error("Failed to delete emails", error);
+      console.error("Failed to delete emails", error)
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.post("http://localhost:5000/api/email/delete", { ids: [id] });
-      setEmails((prev) => prev.filter((email) => email._id !== id));
-      setMenuOpenId(null);
-    } catch (err) {
-      console.error("Failed to delete email", err);
+      await axios.post("http://localhost:5000/api/email/delete", { ids: [id] })
+      setEmails((prev) => prev.filter((email) => email._id !== id))
+      setMenuOpenId(null)
+    } catch (error) {
+      console.error("Failed to delete email", error)
     }
-  };
+  }
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpenId(null);
+        setMenuOpenId(null)
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, []);
-=======
->>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 
   const handleBackToInbox = () => {
     setSelectedEmail(null)
@@ -174,21 +161,29 @@ const EmailMessages = () => {
       </div>
       {/* email message div */}
       <>
-        {selectedEmails ? (
-          <EmailDetail email={selectedEmails} onBack={handleBackToInbox} />
+        {selectedEmail ? (
+          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} />
         ) : (
           emails.filter((email) =>
             email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
             email.subject.toLowerCase().includes(search.toLowerCase()) ||
             email.messagePreview.toLowerCase().includes(search.toLowerCase())
           ).map((email) => (
-            <div className="justinmaindiv" key={email._id} onClick={() => setSelectedEmail(email)}>
+            <div className="justinmaindiv" key={email._id}>
               <div className="justinleftrightmaindiv" style={{ cursor: 'pointer' }}>
                 {/* left */}
                 <div className="justinmaindivleftdiv">
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="checkbox"
+                      checked={selectedEmails.includes(email._id)}
+                      onChange={() => {
+                        if (selectedEmails.includes(email._id)) {
+                          setSelectedEmails(selectedEmails.filter(id => id !== email._id));
+                        } else {
+                          setSelectedEmails([...selectedEmails, email._id]);
+                        }
+                      }}
                       style={{ width: "18px", height: "18px", borderRadius: "5px" }}
                     />
                     <span
@@ -202,7 +197,7 @@ const EmailMessages = () => {
                       {email.sender.initials}
                     </span>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", flexDirection: "column" }} onClick={() => setSelectedEmail(email)}>
                     <span
                       style={{
                         color: "",
@@ -223,8 +218,25 @@ const EmailMessages = () => {
                 </div>
                 {/* right */}
                 <div className="justinmaindivrightdiv">
-                  <span>
-                    <HiOutlineDotsHorizontal />
+                  <span onClick={() => setMenuOpenId(email._id)}>
+                    <div style={{ position: "relative" }}>
+                      <span
+                        onClick={() =>
+                          setMenuOpenId(menuOpenId === email._id ? null : email._id)
+                        }
+                        className="three-dot-icon"
+                      >
+                        <HiOutlineDotsHorizontal />
+                      </span>
+
+                      {menuOpenId === email._id && (
+                        <div className="custom-popup-menu" ref={menuRef}>
+                          <div onClick={() => handleReply(email)}><FaReply /> Reply</div>
+                          <div onClick={() => handleDelete(email._id)}> <RiDeleteBinLine /> Delete</div>
+                        </div>
+                      )}
+                    </div>
+
                   </span>
                   <span
                     style={{
@@ -238,38 +250,9 @@ const EmailMessages = () => {
                   <span style={{ marginBottom: "5px" }}>{email.time}</span>
                 </div>
               </div>
-<<<<<<< HEAD
-              {/* right */}
-              <div className="justinmaindivrightdiv">
-                <span onClick={() => setMenuOpenId(email._id)}>
-                  <div style={{ position: "relative" }}>
-                    <span
-                      onClick={() =>
-                        setMenuOpenId(menuOpenId === email._id ? null : email._id)
-                      }
-                      className="three-dot-icon"
-                    >
-                      <HiOutlineDotsHorizontal />
-                    </span>
-
-                    {menuOpenId === email._id && (
-                      <div className="custom-popup-menu" ref={menuRef}>
-                        <div onClick={() => handleReply(email)}><FaReply /> Reply</div>
-                        <div onClick={() => handleDelete(email._id)}> <RiDeleteBinLine /> Delete</div>
-                      </div>
-                    )}
-                  </div>
-
-                </span>
-
-
-
-                <span
-=======
               {/* folder gallery */}
               <div className="foldergallerydiv">
                 <div
->>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   style={{
                     display: "flex",
                     gap: "10px",
@@ -277,37 +260,6 @@ const EmailMessages = () => {
                     fontWeight: 600,
                   }}
                 >
-<<<<<<< HEAD
-
-                  <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
-                </span>
-                <span style={{ marginBottom: "5px" }}>{email.time}</span>
-              </div>
-            </div>
-            {/* folder gallery */}
-            <div className="foldergallerydiv">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  color: "#676969",
-                  fontWeight: 600,
-                }}
-              >
-                <span>
-                  <AiOutlineFolderOpen />
-                </span>
-                <span>{email.attachments.length}</span>
-                <span>
-                  <GrGallery />
-                </span>
-                <span>{email.image?.length}</span>
-                {console.log('imgg length', email.image?.length)}
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                {email.tags.starred && (
-=======
->>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   <span>
                     <AiOutlineFolderOpen />
                   </span>

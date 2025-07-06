@@ -98,16 +98,24 @@ const receiveEmail = async (req, res) => {
 };
 
 const deleteEmail = async (req, res) => {
-    try {
-    const id = req.params.id;
-    console.log('id to delete', id)
-    const data = await EmailModal.findById(id)
-    if(!data) {
-        return res.status(404).json({success: false, message: "Record not found"})
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ success: false, message: "No IDs provided" });
     }
-    }catch(error) {
-    return res.status(500).json({success:false, message: "FAiled to delete email", error: error.message})
+    const result = await EmailModal.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "No emails found" });
     }
-}
+
+    res.status(200).json({ success: true, message: `${result.deletedCount} email(s) deleted` });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to delete emails", error: error.message });
+  }
+};
+
+
+
 
 module.exports = {sendEmail, receiveEmail, deleteEmail};
