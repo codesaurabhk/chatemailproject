@@ -9,20 +9,35 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { AiOutlineFolderOpen } from "react-icons/ai";
 import { GrGallery } from "react-icons/gr";
 import { AiFillStar } from "react-icons/ai";
+<<<<<<< HEAD
+import EmailData from "../EmailMessages/emailData.json"
+import { useEffect, useRef } from "react";
+=======
 // import EmailData from "../EmailMessages/emailData.json"
 import { useEffect } from "react";
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 import axios from "axios";
 import EmailDetail from "../EmailDetails/EmailDetail";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FaReply } from "react-icons/fa";
 
 
 
 const EmailMessages = () => {
   const [search, setSearch] = useState("");
+<<<<<<< HEAD
+  const [emails, setEmails] = useState([])
+  const [selectedEmails, setSelectedEmails] = useState([]);
+  const [menuOpenId, setMenuOpenId] = useState(null);
+
+
+  const menuRef = useRef();
+=======
   const [emails, setEmails] = useState([]);
 
   const [selectedEmails, setSelectedEmails] = useState(null)
 
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -68,6 +83,39 @@ const EmailMessages = () => {
     }
     fetchEmail();
   }, []);
+<<<<<<< HEAD
+  const handleDeleteSelected = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/email/delete", {
+        ids: selectedEmails
+      });
+      setEmails(prev => prev.filter(email => !selectedEmails.includes(email._id)));
+      setSelectedEmails([]);
+    } catch (error) {
+      console.error("Failed to delete emails", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.post("http://localhost:5000/api/email/delete", { ids: [id] });
+      setEmails((prev) => prev.filter((email) => email._id !== id));
+      setMenuOpenId(null);
+    } catch (err) {
+      console.error("Failed to delete email", err);
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpenId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+=======
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
 
   const handleBackToInbox = () => {
     setSelectedEmail(null)
@@ -190,9 +238,38 @@ const EmailMessages = () => {
                   <span style={{ marginBottom: "5px" }}>{email.time}</span>
                 </div>
               </div>
+<<<<<<< HEAD
+              {/* right */}
+              <div className="justinmaindivrightdiv">
+                <span onClick={() => setMenuOpenId(email._id)}>
+                  <div style={{ position: "relative" }}>
+                    <span
+                      onClick={() =>
+                        setMenuOpenId(menuOpenId === email._id ? null : email._id)
+                      }
+                      className="three-dot-icon"
+                    >
+                      <HiOutlineDotsHorizontal />
+                    </span>
+
+                    {menuOpenId === email._id && (
+                      <div className="custom-popup-menu" ref={menuRef}>
+                        <div onClick={() => handleReply(email)}><FaReply /> Reply</div>
+                        <div onClick={() => handleDelete(email._id)}> <RiDeleteBinLine /> Delete</div>
+                      </div>
+                    )}
+                  </div>
+
+                </span>
+
+
+
+                <span
+=======
               {/* folder gallery */}
               <div className="foldergallerydiv">
                 <div
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   style={{
                     display: "flex",
                     gap: "10px",
@@ -200,6 +277,37 @@ const EmailMessages = () => {
                     fontWeight: 600,
                   }}
                 >
+<<<<<<< HEAD
+
+                  <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
+                </span>
+                <span style={{ marginBottom: "5px" }}>{email.time}</span>
+              </div>
+            </div>
+            {/* folder gallery */}
+            <div className="foldergallerydiv">
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  color: "#676969",
+                  fontWeight: 600,
+                }}
+              >
+                <span>
+                  <AiOutlineFolderOpen />
+                </span>
+                <span>{email.attachments.length}</span>
+                <span>
+                  <GrGallery />
+                </span>
+                <span>{email.image?.length}</span>
+                {console.log('imgg length', email.image?.length)}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                {email.tags.starred && (
+=======
+>>>>>>> c7429722a9b3abc1d498ba21d7353a7838f06b9c
                   <span>
                     <AiOutlineFolderOpen />
                   </span>
