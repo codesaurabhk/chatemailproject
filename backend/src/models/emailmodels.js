@@ -14,13 +14,16 @@ const emailSchema = new mongoose.Schema(
         name:{type:String},
         starred:{type:Boolean, default: false},
         bin:{type:Boolean, default:false},
-        type:{type:String, enum:["inbox", "sent", "draft"], default:"sent"}
+        type:{type:String, enum:["inbox", "sent", "draft"], default:"sent"},
+        deleted: {
+         type: Boolean,
+         default: false,
+        }
     },
     {
         timestamps: true,
-        collection:"emails"
     }
 );
-const emailModal = mongoose.model("email", emailSchema);
+const emailModal = mongoose.model("Email", emailSchema);
 
 module.exports = emailModal;

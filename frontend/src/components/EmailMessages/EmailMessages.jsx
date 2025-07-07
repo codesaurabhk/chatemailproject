@@ -13,10 +13,11 @@ import axios from "axios";
 import EmailDetail from "../EmailDetails/EmailDetail";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaReply } from "react-icons/fa";
+import {Link} from 'react-router-dom'
 
 
 
-const EmailMessages = () => {
+const EmailMessages = ({filteredEmails}) => {
   const [search, setSearch] = useState("");
   const [emails, setEmails] = useState([]);
 
@@ -42,7 +43,7 @@ const EmailMessages = () => {
               backgroundColor: "#5e35b1"
             },
             subject: email.subject,
-            messagePreview: email.body.slice(0, 50) + "...",  //trim preview
+            messagePreview: (email.body || "").slice(0, 50) + "...",  //trim preview
             time: email.createdAt && !isNaN(new Date(email.createdAt)) ? new Intl.DateTimeFormat('en-GB', {
               day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
             }).format(new Date(email.createdAt)) : 'Invalide Date',
@@ -52,13 +53,6 @@ const EmailMessages = () => {
             },
             tags: {
               starred: email.starred,
-              labels: [
-                {
-                  name: "External",
-                  color: "#ffa726",
-                  backgroundColor: "#fff3e0"
-                }
-              ],
               extraLabelCount: 0
             }
           }
@@ -107,6 +101,18 @@ const EmailMessages = () => {
   const handleBackToInbox = () => {
     setSelectedEmail(null)
   }
+
+  const handleToggleStar = async(id, currentStarred) => {
+    try {
+     const updated = await axios.put(`http://localhost:5000/api/email/star/${id}`, {
+      starred: !currentStarred,
+     })
+     setEmails((prevEmails) => prevEmails.map((email) => email._id === id ? {...email, tags:{...email.tags, starred:!currentStarred}} : email))
+    }catch(error) {
+     console.error("Failed to update starred status", error)
+    }
+  }
+
   return (
     <div className="mainemailmessage">
       <div className="header">
@@ -164,7 +170,7 @@ const EmailMessages = () => {
         {selectedEmail ? (
           <EmailDetail email={selectedEmail} onBack={handleBackToInbox} />
         ) : (
-          emails.filter((email) =>
+          (filteredEmails || emails).filter((email) =>
             email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
             email.subject.toLowerCase().includes(search.toLowerCase()) ||
             email.messagePreview.toLowerCase().includes(search.toLowerCase())
@@ -174,7 +180,9 @@ const EmailMessages = () => {
                 {/* left */}
                 <div className="justinmaindivleftdiv">
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <label className="custom-checkbox">
                     <input
+                    className="checkmarkinput"
                       type="checkbox"
                       checked={selectedEmails.includes(email._id)}
                       onChange={() => {
@@ -184,9 +192,15 @@ const EmailMessages = () => {
                           setSelectedEmails([...selectedEmails, email._id]);
                         }
                       }}
-                      style={{ width: "18px", height: "18px", borderRadius: "5px" }}
+                      style={{ width: "16px", height: "16px", borderRadius: "5px" }}
                     />
-                    <span
+                    <span className="checkmark"></span>
+                    </label>
+                    <span onClick={() => handleToggleStar(email._id, email.tags.starred)} style={{cursor:'pointer'}}>
+                      <AiFillStar style={{fontSize:"18px", color: email.tags.starred ? "#fba64b" : "#ccc"}}/>
+
+                    </span>
+                    {/* <span
                       style={{
                         backgroundColor: email.sender.backgroundColor,
                         color: "white",
@@ -195,27 +209,30 @@ const EmailMessages = () => {
                       }}
                     >
                       {email.sender.initials}
-                    </span>
+                    </span> */}
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column" }} onClick={() => setSelectedEmail(email)}>
+                  <div style={{ display: "flex" }} onClick={() => setSelectedEmail(email)}>
                     <span
                       style={{
                         color: "",
-                        fontSize: "18px",
-                        fontWeight: 600,
+                        fontSize: "14px",
+                        fontWeight: 400,
                         marginBottom: "5px",
+                        color:'black',
+                        marginRight:'22px'
                       }}
                     >
-                      {email.to[0]}
+                      To: {email.to[0]}
                     </span>
-                    <span style={{ color: "#636363", fontSize: "16px" }}>
-                      {email.subject}
+                    <span style={{ color: "black", fontSize: "14px" }}>
+                      {email.subject} - 
                     </span>
-                    <span style={{ color: "#636363", fontSize: "16px" }}>
+                    <span style={{ color: "#636363", fontSize: "14px" }}>
                       {email.messagePreview}
                     </span>
                   </div>
                 </div>
+                
                 {/* right */}
                 <div className="justinmaindivrightdiv">
                   <span onClick={() => setMenuOpenId(email._id)}>
@@ -245,11 +262,38 @@ const EmailMessages = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    <BsDot style={{ color: email.status.dotColor, fontSize: "30px" }} />
                   </span>
-                  <span style={{ marginBottom: "5px" }}>{email.time}</span>
+                  <span className="time-label" style={{ marginBottom: "5px", fontSize:'16px' }}>{email.time}</span>
+                  <span className="delete-icon" style={{ cursor:'pointer', fontSize:'14px'}} onClick={() => handleDelete(email._id)}><RiDeleteBinLine/></span>
                 </div>
               </div>
+             
+                    {/* image and attachment */}
+                    {email.attachments?.length > 0 && (
+                      <div className="attachment-section" style={{marginLeft:'100px'}}>
+                        <div style={{display:'flex', flexWrap:'wrap', gap:'10px'}}>
+                          {email.attachments.map((file, index) => {
+                            const fileName = file.split('/').pop();
+                             const isImage = file.match(/\.(jpeg|jpg|png|gif)$/i);
+                              const fileUrl = `http://localhost:5000/${file.replace(/\\/g, '/')}`;
+                              return(
+                                <Link
+                                key={index}
+                                href={fileUrl}
+                                target="_blank"
+                                rel="noopener no referrer"
+                                style={{display:'flex', alignItems:'center', gap:'8px',  border:'1px solid #ccc', padding:'5px 5px', borderRadius:'20px', textDecoration:'none', backgroundColor:'#f0f0f0', color:'#333'}}
+                                >
+                                  <img src={isImage ? fileUrl : "/pdf-icon.png"} alt="file" width="20" height="20" style={{backgroundColor:'red'}}/>
+                                  <span>{fileName}</span>
+                                </Link>
+                              )
+
+                          })}
+                        </div>
+                      </div>
+                    )}         
+                  
               {/* folder gallery */}
               <div className="foldergallerydiv">
                 <div
@@ -271,24 +315,6 @@ const EmailMessages = () => {
                   {console.log('imgg length', email.image?.length)}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {email.tags.starred && (
-                    <span>
-                      <AiFillStar style={{ fontSize: "15px", color: "#fba64b" }} />
-                    </span>
-                  )}
-                  {email.tags.labels.map((label, index) => (
-                    <span key={index}
-                      style={{
-                        padding: "4px 7px",
-                        backgroundColor: label.backgroundColor,
-                        borderRadius: "5px",
-                        color: label.color,
-                      }}
-                    >
-                      <input type="checkbox" />
-                      <span>{label.name}</span>
-                    </span>
-                  ))}
                   <span
                     style={{
                       padding: "4px 7px",
@@ -298,7 +324,7 @@ const EmailMessages = () => {
                       fontSize: "12px",
                     }}
                   >
-                    +{email.tags.extraLabelCount}
+                    +{email.attachments?.length}
                   </span>
                 </div>
               </div>

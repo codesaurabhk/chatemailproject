@@ -12,14 +12,15 @@ const sendEmail = async (req, res) => {
       from,
       subject,
       body,
-      attachments,
       date,
-      image,
       name,
       starred,
       bin,
       type,
     } = req.body;
+
+    const attachments = (req.files.attachments || []).map((file) => file.path)
+    const images = (req.files.images || []).map((file) => file.path)
 
     const email = new EmailModal({
       to,
@@ -30,7 +31,7 @@ const sendEmail = async (req, res) => {
       body,
       attachments,
       date,
-      image,
+      image:images,
       name,
       starred,
       bin,
@@ -54,16 +55,17 @@ const sendEmail = async (req, res) => {
 
     const mailOptions = {
       from: from || process.env.EMAIL_USER,
-      to: to?.join(","),
-      cc: cc?.length ? cc.join(",") : undefined,
-      bcc: bcc?.length ? bcc.join(",") : undefined,
+      to: Array.isArray(to) ? to.join(",") : to,
+      cc: Array.isArray(cc) && cc.length ? cc.join(",") : undefined,
+      bcc: Array.isArray(bcc) && bcc.length ? bcc.join(",") : undefined,
       subject,
         //   text: body,
       html: `<div style="white-space: pre-wrap;">${body}</div>`,
-      attachments: attachments
-        ?.filter((file) => fs.existsSync(path.resolve(file))) // Only keep valid files
-        .map((file) => ({ path: path.resolve(file) })),
+      attachments: [...attachments.map((file) => ({path: file})),
+        ...images.map((img) => ({path: img}))
+      ],
     };
+
 
     await transporter.sendMail(mailOptions);
 
@@ -97,13 +99,26 @@ const receiveEmail = async (req, res) => {
   }
 };
 
+const starredEmail = async (req, res) => {
+  try {
+     const email = await EmailModal.findByIdAndUpdate(
+        req.params.id,
+        {starred: req.body.starred},
+        {new: true}
+     );
+     res.status(200).json({success: true, data: email})
+    }catch(error) {
+        res.status(500).json({success: false, message:"Failed to updated starred", error: error.message})
+    }
+}
+
 const deleteEmail = async (req, res) => {
   try {
     const { ids } = req.body;
     if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ success: false, message: "No IDs provided" });
     }
-    const result = await EmailModal.deleteMany({ _id: { $in: ids } });
+    const result = await EmailModal.updateMany({ _id: { $in: ids } }, {$set: { isDeleted: true}});
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ success: false, message: "No emails found" });
@@ -115,7 +130,16 @@ const deleteEmail = async (req, res) => {
   }
 };
 
+const getDeletedEmails = async (req, res) => {
+  try {
+  const deletedEmails = await EmailModal.find({isDeleted:true});
+   res.status(200).json({ success: true, data: deletedEmails });
+  }catch(error) {
+     res.status(500).json({ success: false, message: "Failed to fetch deleted emails" });
+  }
+}
 
 
 
-module.exports = {sendEmail, receiveEmail, deleteEmail};
+
+module.exports = {sendEmail, receiveEmail, starredEmail, deleteEmail, getDeletedEmails};

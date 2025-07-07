@@ -98,7 +98,7 @@
 }
 
 .selected-email {
-    background-color: #f1f3f4;
+    background-color: #c2dbff;
     border-left: 3px solid #4285f4;
     transition: background-color 0.2s ease-in-out;
 }
@@ -176,7 +176,7 @@
 }
 
 .selected-email {
-    background-color: #f1f3f4;
+    background-color: #c2dbff;
     border-left: 3px solid #4285f4;
     transition: background-color 0.2s ease-in-out;
 }
@@ -236,4 +236,88 @@
     background-color: #f5f5f5;
     display: flex;
     justify-content: space-between;
+}
+
+
+
+
+/* for custom checkbox */
+.custom-checkbox {
+  display: inline-block;
+  position: relative;
+  padding-left: 24px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: -20px;
+}
+
+.custom-checkbox .checkmarkinput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 14px;
+  width: 14px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+/* Show gray checkmark when checked */
+.checkmarkinput:checked ~ .checkmark {
+  background-color: #fff;
+  border-color: gray;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show custom tick mark */
+.custom-checkbox .checkmarkinput:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Custom tick mark design */
+.custom-checkbox .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 3px;
+  height: 9px;
+  border: solid gray;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+
+.justinmaindiv .delete-icon {
+  display: none;
+    color: gray;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.justinmaindiv .time-label {
+  display: inline;
+}
+.justinmaindiv:hover {
+  background-color: #f0f0f0;
+}
+
+/* On hover over the full message row */
+.justinmaindiv:hover .delete-icon {
+  display: inline;
+}
+
+.justinmaindiv:hover .time-label {
+  display: none;
 }

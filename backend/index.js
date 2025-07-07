@@ -21,6 +21,8 @@ app.use(express.json());
 
 // email api
 app.use("/api/email", emailrouter)
+app.use('/uploads', express.static('uploads'));
+
 
 app.get('/', (req, res) => {
   res.send('Backend is running!');

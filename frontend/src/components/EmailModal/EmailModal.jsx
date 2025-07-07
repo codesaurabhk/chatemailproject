@@ -11,7 +11,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaMinus } from "react-icons/fa";
 import { GoScreenFull } from "react-icons/go";
-const defaultSignature = "\n\nRegards,\nSaurabh Kumar";
+
 
 
 
@@ -23,16 +23,15 @@ const EmailModal = ({ show, onClose }) => {
     const [to, setTo] = useState("")
     const [subject, setSubject] = useState("")
     const [body, setBody] = useState("")
-    const [attachments, setAttachments] = useState([])
+    const [attachments, setAttachments] = useState([]);
+    const [images, setImages] = useState([]);
     const [isExpanded, setIsExpanded] = useState(false);
     const [showLinkInput, setShowLinkInput] = useState(false);
 const [linkText, setLinkText] = useState("");
 const [linkUrl, setLinkUrl] = useState("");
 const [showCalendar, setShowCalendar] = useState(false);
 
-const [signature, setSignature] = useState(defaultSignature);
-const [showSignatureManager, setShowSignatureManager] = useState(false);
-const [useSignature, setUseSignature] = useState(true);
+
 
 
     
@@ -49,15 +48,14 @@ const [useSignature, setUseSignature] = useState(true);
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files)
-        const fileNames = files.map((file) => file.name)
-        setAttachments([...attachments, ...fileNames])
+        const nonImageFiles = files.filter((file) => !file.type.startsWith("image/")) 
+        setAttachments((prev) => [...attachments, ...nonImageFiles])
     }
     // for image
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files || [])
-        const imageFiles = files.filter((file) => file.type.startsWith("image/"))
-        const fileNames = imageFiles.map((file) => file.name) 
-            setAttachments((prev) => [...prev, ...fileNames])
+        const imageFiles = files.filter((file) => file.type.startsWith("image/")) 
+            setImages((prev) => [...prev, ...imageFiles])
     }
 
     // for emoji
@@ -69,29 +67,65 @@ const [useSignature, setUseSignature] = useState(true);
 
     if(!show) return null;
 
+    // const handleSend = async () => {
+    //     try {
+    //         const res = await axios.post("http://localhost:5000/api/email/send", {
+    //             to:[to], //send an array
+    //             from: "",
+    //             subject,
+    //             body:body || "",
+    //             cc:cc ? [cc] : [],
+    //             bcc:bcc ? [bcc] : [],
+    //             attachments,
+    //             image:"",
+    //             name:"You",
+    //             starred:false,
+    //             bin: false,
+    //             type: "sent"
+    //         })
+    //         alert("Email sent successfully!")
+    //         onClose();
+    //     }catch(error) {
+    //         console.error("Error sending email", error)
+    //         alert("Failed to send email")
+    //     }
+    // }
+
     const handleSend = async () => {
-        try {
-            const res = await axios.post("http://localhost:5000/api/email/send", {
-                to:[to], //send an array
-                from: "",
-                subject,
-                body: useSignature && !body.includes(signature) ? body + signature : body,
-                cc:cc ? [cc] : [],
-                bcc:bcc ? [bcc] : [],
-                attachments,
-                image:"",
-                name:"You",
-                starred:false,
-                bin: false,
-                type: "sent"
-            })
-            alert("Email sent successfully!")
-            onClose();
-        }catch(error) {
-            console.error("Error sending email", error)
-            alert("Failed to send email")
-        }
+      try{
+       const formData = new FormData();
+       formData.append("to", to);
+        formData.append("from", ""); // use default or actual
+    formData.append("subject", subject);
+    formData.append("body", body);
+    formData.append("cc", cc);
+    formData.append("bcc", bcc);
+    formData.append("name", "You");
+    formData.append("starred", false);
+    formData.append("bin", false);
+    formData.append("type", "sent");
+
+    //append files
+    attachments.forEach((file) => {
+      formData.append("attachments", file)
+    });
+    images.forEach((img) => {
+      formData.append("images", img)
+    });
+
+    await axios.post("http://localhost:5000/api/email/send", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    })
+    alert("Email sent successfully!")
+      }catch(error) {
+       console.error("Error sending email", error)
+      }
     }
+
+
+
     const toggleExpanded = () => {
   setIsExpanded(prev => !prev);
 };
@@ -169,6 +203,26 @@ const handleDelete = () => {
              <label htmlFor="">Subject  </label>
           <input type="text" className="subject" placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
           <textarea className="email-body" placeholder="Compose Email" value={body} onChange={(e) => setBody(e.target.value)} />
+            {/* image preview */}
+            {images.length > 0 && (
+              <div className="image-preview">
+                <h4>Images</h4>
+                {images.map((img, i) => (
+                  <img key={i} src={URL.createObjectURL(img)} alt={`preview-${i}`} width="100" style={{marginRight:'10px', borderRadius:'5px'}}/>
+                ))}
+              </div>
+            )}
+          {/* Attachment preview */}
+          {attachments.length > 0 && (
+            <div className="attachment-preview">
+              <h4>Attachments:</h4>
+              {attachments.map((file, i) => (
+                <div key={i}>
+                 {file.name}
+                </div>
+              ))}
+            </div>
+          )}
           </div>
         </div>
         <div className="modal-footer">
@@ -176,7 +230,6 @@ const handleDelete = () => {
             <button onClick={handleAttachmentClick}><RiAttachment2 /></button>
             <button onClick={() => imageInputRef.current.click()}><HiOutlinePhotograph /></button>
             <button onClick={() => setShowLinkInput(prev => !prev)}><AiOutlineLink /></button>
-            <button onClick={() => setShowSignatureManager(prev => !prev)}><MdOutlineModeEdit /></button>
             <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}><CiFaceSmile /></button>
 
             {/* for handle input */}
@@ -190,42 +243,7 @@ const handleDelete = () => {
                 </div>
             )}
 
-            {showSignatureManager && (
-  <div className="signature-manager">
-    <label>Signature:</label>
-    <textarea
-      rows={3}
-      value={signature}
-      onChange={(e) => setSignature(e.target.value)}
-    />
-    <div className="signature-options">
-      <label>
-        <input
-          type="radio"
-          name="sig"
-          checked={useSignature}
-          onChange={() => setUseSignature(true)}
-        />
-        Use this signature
-      </label>
-      <label style={{ marginLeft: "20px" }}>
-        <input
-          type="radio"
-          name="sig"
-          checked={!useSignature}
-          onChange={() => setUseSignature(false)}
-        />
-        No signature
-      </label>
-    </div>
-  </div>
-)}
-
-
-
           </div>
-         
-
           <div>
             <button className="btns" onClick={() => setShowCalendar(prev => !prev)}><MdOutlineEditCalendar /></button>
             <button onClick={handleDelete} className="btns"><RiDeleteBinLine /></button>
@@ -240,7 +258,7 @@ const handleDelete = () => {
 )}
 
          {showLinkInput && (
-  <div className="link-input-box">
+  <div className="link-input-box" style={{display:'flex', flexDirection:'column', position:'relative'}}>
     <input
       type="text"
       placeholder="Text to display"
