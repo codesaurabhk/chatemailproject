@@ -90,7 +90,7 @@
 
 .selection-toolbar {
     padding: 8px 12px;
-    background: #f1f3f4;
+    background: #C2DBFF;
     border-bottom: 1px solid #ccc;
     display: flex;
     align-items: center;
@@ -98,7 +98,7 @@
 }
 
 .selected-email {
-    background-color: #c2dbff;
+    background-color: #C2DBFF;
     border-left: 3px solid #4285f4;
     transition: background-color 0.2s ease-in-out;
 }
@@ -310,7 +310,7 @@
   display: inline;
 }
 .justinmaindiv:hover {
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
 }
 
 /* On hover over the full message row */
