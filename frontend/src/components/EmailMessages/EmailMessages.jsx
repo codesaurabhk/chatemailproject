@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../EmailMessages/EmailMessages.css";
-import { IoIosSearch, IoMdSettings } from "react-icons/io";
+import { IoIosSearch} from "react-icons/io";
 import { RiFilterOffLine } from "react-icons/ri";
 import { BiRefresh } from "react-icons/bi";
 import { AiOutlineSetting } from "react-icons/ai";
@@ -17,7 +17,7 @@ import {Link} from 'react-router-dom'
 
 
 
-const EmailMessages = ({filteredEmails}) => {
+const EmailMessages = ({filteredEmails, isDeletedPage}) => {
   const [search, setSearch] = useState("");
   const [emails, setEmails] = useState([]);
 
@@ -108,11 +108,32 @@ const EmailMessages = ({filteredEmails}) => {
       starred: !currentStarred,
      })
      setEmails((prevEmails) => prevEmails.map((email) => email._id === id ? {...email, tags:{...email.tags, starred:!currentStarred}} : email))
+    //  update selectedEmail too if its open in detail view
+    if(selectedEmail?._id === id) {
+      setSelectedEmail((prev) => ({
+        ...prev, tags:{
+          ...prev.tags,
+          starred:!currentStarred
+        }
+      }))
+    }
     }catch(error) {
      console.error("Failed to update starred status", error)
     }
   }
 
+  // for delete permanently via delete page code
+  const handlePermanentDelete = async () => {
+    try {
+     await axios.post("http://localhost:5000/api/email/permanent-delete", {
+      ids: selectedEmails
+     });
+     setEmails((prev) => prev.filter((email) => !selectedEmails.includes(email._id)))
+     setSelectedEmails([])
+    }catch(error) {
+      console.error("Failed to permanently delete emails", error)
+    }
+  }
   return (
     <div className="mainemailmessage">
       <div className="header">
@@ -122,7 +143,7 @@ const EmailMessages = ({filteredEmails}) => {
             Inbox
           </span>
           <span className="twothreemail">
-            {emails.length}Emails{" "}
+            {(filteredEmails || emails).length}Emails{" "}
             <span
               style={{
                 fontSize: "22px",
@@ -145,6 +166,25 @@ const EmailMessages = ({filteredEmails}) => {
               )}</span> </span>
 
         </div>
+        {/* for permanently delete mail via delete page */}
+        {isDeletedPage && selectedEmails.length > 0 && (
+          <div style={{marginBottom:'10px', display:'flex', justifyContent:'flex-end'}}>
+            <button
+            onClick={handlePermanentDelete}
+            style={{
+              padding:'8px 16px',
+              backgroundColor:'#d32f2f',
+              color:'white',
+              border:'none',
+              borderRadius:'4px',
+              cursor:'pointer'
+            }}
+            >
+             Delete Forever
+            </button>
+          </div>
+        )}
+        {/*end of permanently delete mail via delete page */}
         {/* filter */}
         <div className="filter">
           <span className="searchinputdiv">
@@ -166,16 +206,16 @@ const EmailMessages = ({filteredEmails}) => {
         </div>
       </div>
       {/* email message div */}
-      <>
+      <div className="justinmaindivmap">
         {selectedEmail ? (
-          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} />
+          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} onToggleStar={handleToggleStar} />
         ) : (
           (filteredEmails || emails).filter((email) =>
             email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
             email.subject.toLowerCase().includes(search.toLowerCase()) ||
             email.messagePreview.toLowerCase().includes(search.toLowerCase())
           ).map((email) => (
-            <div className={`justinmaindiv ${selectedEmails.includes(email._id) ? "selected-email" : ""}`} key={email._id}>
+            <div className={`justinmaindiv ${selectedEmails.includes(email._id) ? "selected-email" : ""}`} key={email._id} >
               <div className="justinleftrightmaindiv" style={{ cursor: 'pointer' }}>
                 {/* left */}
                 <div className="justinmaindivleftdiv">
@@ -270,9 +310,9 @@ const EmailMessages = ({filteredEmails}) => {
              
                     {/* image and attachment */}
                     {email.attachments?.length > 0 && (
-                      <div className="attachment-section" style={{marginLeft:'100px'}}>
+                      <div className="attachment-section" style={{marginLeft:'100px' }}>
                         <div style={{display:'flex', flexWrap:'wrap', gap:'10px'}}>
-                          {email.attachments.map((file, index) => {
+                          {email.attachments.slice(0,3).map((file, index) => {
                             const fileName = file.split('/').pop();
                              const isImage = file.match(/\.(jpeg|jpg|png|gif)$/i);
                               const fileUrl = `http://localhost:5000/${file.replace(/\\/g, '/')}`;
@@ -285,7 +325,7 @@ const EmailMessages = ({filteredEmails}) => {
                                 style={{display:'flex', alignItems:'center', gap:'8px',  border:'1px solid #ccc', padding:'5px 5px', borderRadius:'20px', textDecoration:'none', backgroundColor:'#f0f0f0', color:'#333'}}
                                 >
                                   <img src={isImage ? fileUrl : "/pdf-icon.png"} alt="file" width="20" height="20" style={{backgroundColor:'red'}}/>
-                                  <span>{fileName}</span>
+                                  <span style={{whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px', display:'inline-block', verticalAlign:'middle'}}>{fileName}</span>
                                 </Link>
                               )
 
@@ -331,7 +371,7 @@ const EmailMessages = ({filteredEmails}) => {
             </div>
           ))
         )}
-      </>
+      </div>
     </div>
   );
 };

@@ -8,7 +8,8 @@ const Deleted = () => {
    useEffect(() => {
     const fetchDeletedEmails = async () => {
       try {
-       const res = await axios.get("http://localhost:5000/api/email/receive")
+       const res = await axios.get("http://localhost:5000/api/email/deleted")
+       console.log('res status from delete', res)
        const formatted = res.data.data.map((email) => {
         const name = email.name;
           const initials = name.split(" ").map((word) => word[0]).join("").toUpperCase().slice(0, 2);
@@ -40,10 +41,11 @@ const Deleted = () => {
     }
     fetchDeletedEmails();
    },[])
+
   return (
-    <div>
-     <EmailMessages filteredEmails={deletedEmails}/>
-    </div>
+    
+     <EmailMessages filteredEmails={deletedEmails} isDeletedPage={true}/>
+    
   )
 }
 

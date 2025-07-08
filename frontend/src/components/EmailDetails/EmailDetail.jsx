@@ -12,18 +12,26 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const EmailDetail = ({ email, onBack }) => {
+const EmailDetail = ({ email, onBack, onToggleStar }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [emailshow, setEmailShow] = useState(false);
+  // const [emailshow, setEmailShow] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState(null);
   const [emails, setEmails] = useState([]);
+  const [body, setBody] = useState("")  //store emoji input
+  const [emojiList, setEmojiList] = useState([])  //emojis to show below email body
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  // for handlereply and forward
+  const [modalData, setModalData] = useState({
+    show:false,
+    to:"",
+    subject:"",
+    body:""
+  })
 
   const menuRef = useRef();
 
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const handleEmojiClick = (emojiData) => {
-    setBody((prev) => prev + emojiData.emoji);
-  };
+ 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -58,6 +66,52 @@ const EmailDetail = ({ email, onBack }) => {
       console.error("Failed to delete email", error);
     }
   };
+
+  // function for handle reply and forward
+  const handleReply = () => {
+    setModalData({
+      show:true,
+      to:email.from,
+      subject:`Re: ${email.subject}`,
+      body:`\n\n------------------ Original Message ------------------\n${email.body}`,
+    })
+  }
+
+  const handleForward = () => {
+    setModalData({
+      show:true,
+      to:"",
+      subject:`Fwd: ${email.subject}`,
+      body:`\n\n------------------ Forwarded Message ------------------\nFrom: ${email.from}\nDate: ${new Date(email.createdAt).toLocaleString()}\nTo: ${email.to.join(", ")}\nSubject: ${email.subject}\n\n${email.body}`
+    });
+  };
+
+  // for emojis
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if(e.key === 'Enter' && body.trim() !== "") {
+        setEmojiList((prev) => [...prev, body]);
+        // setBody(""); //clear the emoji input
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [body])
+
+  const handleEmojiClick = (emojiData) => {
+    setEmojiList((prev) => [...prev, emojiData.emoji])
+    // setBody("")
+  }
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if(e.key === 'Enter' && body.trim() !== "") {
+        setEmojiList((prev) => [...prev, body])
+        // setBody("")
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+   }, [body])
 
   if (!email) return null;
 
@@ -139,8 +193,8 @@ const EmailDetail = ({ email, onBack }) => {
                 }).format(new Date(email.createdAt))
               : "Invalid Date"}
           </span>
-          <span className="icon">
-            <AiFillStar />
+          <span className="icon" onClick={() => onToggleStar(email._id, email.tags.starred)} >
+            <AiFillStar style={{fontSize:'20px', color:email.tags.starred ? '#fba64b' : 'ccc'}}/>
           </span>
           <span
             className="icon"
@@ -148,10 +202,15 @@ const EmailDetail = ({ email, onBack }) => {
           >
             <GrEmoji />
           </span>
-          <span className="icon" onClick={() => setEmailShow(true)}>
+          <span className="icon" onClick={handleReply}>
             <LuReply />
           </span>
-          <EmailModal show={emailshow} onClose={() => setEmailShow(false)} />
+          <EmailModal 
+          show={modalData.show} 
+          onClose={() => setModalData({...modalData, show:false})}
+          to={modalData.subject}
+          body={modalData.body}
+           />
           <span onClick={() => setMenuOpenId(email._id)}>
             <div style={{ position: "relative" }}>
               <span
@@ -266,10 +325,12 @@ const EmailDetail = ({ email, onBack }) => {
           </p>
         </div>
       )}
-      <div
-        className="emailbody"
-        dangerouslySetInnerHTML={{ __html: email.body }}
-      />
+     <div
+  className="email-body" style={{border:'none'}}
+  dangerouslySetInnerHTML={{
+    __html: email.body.replace(/\n/g, "<br/>")
+  }}
+/>
 
       {/* image and attachment */}
       <div style={{ marginTop: "20px" }}>
@@ -369,6 +430,13 @@ const EmailDetail = ({ email, onBack }) => {
             );
           })}
         </div>
+        {emojiList.length > 0 && (
+  <div className="emoji-preview" style={{marginTop:"10px", fontSize:"22px"}}>
+  {emojiList.map((emoji, index) => (
+    <span key={index} style={{marginRight:'10px'}}>{emoji}</span>
+  ))}
+  </div>
+)}
       </div>
 
       <div

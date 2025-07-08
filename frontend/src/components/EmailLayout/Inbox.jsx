@@ -1,11 +1,60 @@
-import React from 'react'
-import './Inbox.css'
-const Inbox = () => {
-  return (
-    <div>
-      Hey I am inbox
-    </div>
-  )
-}
+import React, { useState, useEffect } from 'react';
+import './Inbox.css';
+import axios from 'axios';
+import EmailMessages from '../EmailMessages/EmailMessages';
 
-export default Inbox
+const Inbox = () => {
+  const [emails, setEmails] = useState([]);
+
+  useEffect(() => {
+    const fetchInboxEmails = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/email/receive");
+
+        const formatted = res.data.data.map((email) => {
+          const name = email.name;
+          const initials = name.split(" ").map((word) => word[0]).join("").toUpperCase().slice(0, 2);
+
+          return {
+            ...email,
+            sender: {
+              name,
+              initials,
+              backgroundColor: "#5e35b1"
+            },
+            subject: email.subject,
+            messagePreview: (email.body || "").slice(0, 50) + "...",
+            time: email.createdAt && !isNaN(new Date(email.createdAt))
+              ? new Intl.DateTimeFormat('en-GB', {
+                  day: '2-digit', month: 'short', year: 'numeric',
+                  hour: '2-digit', minute: '2-digit', hour12: true
+                }).format(new Date(email.createdAt))
+              : 'Invalid Date',
+            status: { dotColor: "red" },
+            folders: {
+              galleryCount: email.attachments?.length || 0,
+            },
+            tags: {
+              starred: email.starred,
+              extraLabelCount: 0
+            }
+          };
+        });
+
+        const inboxOnly = formatted.filter((email) => email.type === "inbox");
+        setEmails(inboxOnly);
+
+      } catch (error) {
+        console.error("Failed to fetch inbox emails", error);
+      }
+    };
+
+    fetchInboxEmails();
+  }, []);
+
+  return (
+    <EmailMessages filteredEmails={emails} />
+  );
+};
+
+export default Inbox;

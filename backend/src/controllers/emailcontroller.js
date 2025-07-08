@@ -20,13 +20,26 @@ const sendEmail = async (req, res) => {
     } = req.body;
 
     const attachments = (req.files.attachments || []).map((file) => file.path)
-    const images = (req.files.images || []).map((file) => file.path)
+    const images = (req.files.images || []).map((file) => file.path);
+
+    // check for recipient existence
+    const allRecipients = [...to, ...cc, ...bcc];
+    const existingRecipients = await EmailModal.findOne({
+      type:"sent",   //only consider reciepient from sent emails
+      $or:[
+    {to:{$in: to}},
+    {cc: {$in: to}},
+    {bcc:{$in: to}}
+    ]
+  })
+  
+    const mailType = existingRecipients ? "sent" : "inbox";
 
     const email = new EmailModal({
       to,
       cc,
       bcc,
-      from,
+      from:from || process.env.EMAIL_USER,
       subject,
       body,
       attachments,
@@ -35,7 +48,8 @@ const sendEmail = async (req, res) => {
       name,
       starred,
       bin,
-      type: type || "sent",
+      // type: type || "sent",
+      type: mailType,
     });
 
     const savedEmail = await email.save();
@@ -86,7 +100,7 @@ const sendEmail = async (req, res) => {
 
 const receiveEmail = async (req, res) => {
   try {
-    const emails = await EmailModal.find().sort({ createdAt: -1 });
+    const emails = await EmailModal.find({deleted:false}).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: emails });
   } catch (error) {
     res
@@ -118,7 +132,7 @@ const deleteEmail = async (req, res) => {
     if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ success: false, message: "No IDs provided" });
     }
-    const result = await EmailModal.updateMany({ _id: { $in: ids } }, {$set: { isDeleted: true}});
+    const result = await EmailModal.updateMany({ _id: { $in: ids } }, {$set: { deleted: true}});
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ success: false, message: "No emails found" });
@@ -132,14 +146,27 @@ const deleteEmail = async (req, res) => {
 
 const getDeletedEmails = async (req, res) => {
   try {
-  const deletedEmails = await EmailModal.find({isDeleted:true});
+  const deletedEmails = await EmailModal.find({deleted:true});
    res.status(200).json({ success: true, data: deletedEmails });
   }catch(error) {
      res.status(500).json({ success: false, message: "Failed to fetch deleted emails" });
   }
 }
 
+const permanentDeleteEmails = async (req, res) => {
+  try {
+    const {ids} = req.body;
+    if(!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({success: false, message:"No IDs provided"})
+    }
+    const result = await EmailModal.deleteMany({_id: {$in: ids}, deleted: true})
+    res.status(200).json({success: true, message:`${result.deletedCount} email(s) permanently deleted`})
+  }catch(error) {
+    res.status(500).json({success: false, message:"Faild to permanently delete", error: error.message})
+  }
+}
 
 
 
-module.exports = {sendEmail, receiveEmail, starredEmail, deleteEmail, getDeletedEmails};
+
+module.exports = {sendEmail, receiveEmail, starredEmail, deleteEmail, getDeletedEmails, permanentDeleteEmails};

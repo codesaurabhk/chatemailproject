@@ -31,7 +31,7 @@ const PageRouter = () => {
         },
         {
           path:'sent',
-          element:<EmailMessages/>
+          element:<Sent/>
         },
          {
           path:'drafts',
@@ -43,7 +43,7 @@ const PageRouter = () => {
         },
         {
           path:'allemails',
-          element:<AllEmails/>
+          element:<EmailMessages/>
         },
         {
           path:'spam',

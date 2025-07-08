@@ -321,3 +321,11 @@
 .justinmaindiv:hover .time-label {
   display: none;
 }
+
+.justinmaindivmap {
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+}
+.justinmaindivmap::-webkit-scrollbar{
+    display: none;
+}

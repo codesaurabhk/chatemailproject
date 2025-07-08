@@ -1,5 +1,5 @@
 const express = require ('express');
-const {sendEmail, receiveEmail, deleteEmail, starredEmail, getDeletedEmails} = require ("../controllers/emailcontroller.js");
+const {sendEmail, receiveEmail, deleteEmail, starredEmail, getDeletedEmails, permanentDeleteEmails} = require ("../controllers/emailcontroller.js");
 const emailrouter = express.Router();
 const upload = require("../config/upload.js")
 
@@ -8,7 +8,9 @@ emailrouter.get("/receive", receiveEmail);
 emailrouter.put("/star/:id", starredEmail);
 emailrouter.post("/delete",deleteEmail);
 // get soft deleted mail 
-emailrouter.get("/deleted", getDeletedEmails)
+emailrouter.get("/deleted", getDeletedEmails);
+//delete permanently
+emailrouter.post("/permanent-delete", permanentDeleteEmails)
 
 module.exports = emailrouter;
 

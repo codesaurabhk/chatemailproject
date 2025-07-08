@@ -25,6 +25,8 @@ const Sidebar = () => {
   const [showMores, setshowMores] = useState(false);
   const [showMoref, setshowMoref] = useState(false);
   const [emails, setEmails] = useState([]);
+  const [deletedCount, setDeletedCount] = useState(0);
+
 
   useEffect(() => {
     const fetchEmails = async () => {
@@ -35,7 +37,17 @@ const Sidebar = () => {
         console.error("Failed to fetch emails", error)
       }
     }
+    // for deleted
+    const fetchDeletedCount = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/email/deleted");
+      setDeletedCount(res.data.data.length);
+    } catch (error) {
+      console.error("Failed to fetch deleted emails", error);
+    }
+  };
     fetchEmails();
+    fetchDeletedCount();
   }, []);
 
   return (
@@ -55,15 +67,15 @@ const Sidebar = () => {
 
       <div className='section border-bootom'>
         <div className='section-title'>Emails</div>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/inbox'><span><HiOutlineInbox />Inbox</span> <span className="count">{emails.length}</span></NavLink>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/starred'><span><FaRegStar />Starred</span> <span >46</span></NavLink>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/sent'><span><IoRocketOutline />Sent</span> <span >{emails.length}</span></NavLink>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/drafts'><span><FaRegFilePdf />Drafts</span> <span >12</span></NavLink>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/deleted'><span><RiDeleteBinLine />Deleted </span><span >08</span></NavLink>
-        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/spam'><span><RiSpam2Line />Spam </span><span >0</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/inbox'><span><HiOutlineInbox />Inbox</span> <span className="count">{emails.filter((email) => email.type === 'inbox' && !email.deleted).length}</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/starred'><span><FaRegStar />Starred</span> <span >{emails.filter((email) => email.starred && !email.deleted).length}</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/sent'><span><IoRocketOutline />Sent</span> <span >{emails.filter((email) => email.type === 'sent' && !email.deleted).length}</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/drafts'><span><FaRegFilePdf />Drafts</span> <span >{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/deleted'><span><RiDeleteBinLine />Deleted </span><span >{deletedCount}</span></NavLink>
+        <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/spam'><span><RiSpam2Line />Spam </span><span >{emails.filter((email) => email.spam && !email.deleted).length}</span></NavLink>
         {showMore && (<>
-          <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/important'><span><ImCompass />Important </span><span >12</span></NavLink>
-          <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/allemails'><span><PiUploadLight />All Emails </span><span >34</span></NavLink>
+          <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/important'><span><ImCompass />Important </span><span >{emails.filter((email) => email.important && !email.deleted).length}</span></NavLink>
+          <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none' }} to='/allemails'><span><PiUploadLight />All Emails </span><span >{emails.length}</span></NavLink>
         </>)}
 
         <div className='item' onClick={() => setshowMore(prev => !prev)}>{showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />} {showMore && <FaAngleUp />} </div>
