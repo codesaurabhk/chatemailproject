@@ -23,12 +23,14 @@ const Sidebar = () => {
   const [showMores, setshowMores] = useState(false);
   const [showMoref, setshowMoref] = useState(false);
   const [emails, setEmails] = useState([]);
-  const [showLabelModal, setShowLabelModal] = useState(false);
+  
   const [customLabels, setCustomLabels] = useState(() => {
   const stored = localStorage.getItem("customLabels");
   return stored ? JSON.parse(stored) : [];
 });
   const [newLabelName, setNewLabelName] = useState("");
+  const [showLabelModal, setShowLabelModal] = useState(false);
+  const [showAllLabels, setShowAllLabels] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("customLabels", JSON.stringify(customLabels));
@@ -194,7 +196,7 @@ const Sidebar = () => {
             <FaSquarePlus />
           </div>
         </div>
-        {customLabels.map((label, index) => (
+        {(showAllLabels ? customLabels : customLabels.slice(0, 5)).map((label, index) => (
           <NavLink
             key={index}
             className={({ isActive }) => (isActive ? "item active" : "item")}
@@ -207,7 +209,7 @@ const Sidebar = () => {
             </div>
           </NavLink>
         ))}
-        <NavLink
+        {/* <NavLink
           className={({ isActive }) => (isActive ? "item active" : "item")}
           style={{ textDecoration: "none", color: "black" }}
           to="/teamevents"
@@ -246,12 +248,14 @@ const Sidebar = () => {
             {" "}
             <input type="checkbox" className="dot projects" /> Projects
           </div>
-        </NavLink>
+        </NavLink> */}
         
-        <div className="item" onClick={() => setshowMores((prev) => !prev)}>
-          {showMores ? "Show Less" : "Show More"}
-          {!showMores && <FaAngleDown />} {showMores && <FaAngleUp />}
-        </div>
+         {customLabels.length > 5 && (
+    <div className="item" onClick={() => setShowAllLabels((prev) => !prev)}>
+      {showAllLabels ? "Show Less" : "Show More"}{" "}
+      {!showAllLabels ? <FaAngleDown /> : <FaAngleUp />}
+    </div>
+  )}
       </div>
 
       {/* <div className='section border-bootom'>
