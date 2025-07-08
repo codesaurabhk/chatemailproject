@@ -36,7 +36,7 @@
 }
 
 .compose {
-    background-color: orange;
+    background-color: #007AFF;
     color: white;
     font-size: 16px;
     padding: 10px;
@@ -121,7 +121,7 @@
 
 .dot.work {
   border-color: #FFD000;
-  color: #FFD000;
+  color: #007AFF;
 }
 
 .dot.external {
@@ -145,7 +145,7 @@
 }
 .plus{
     background-color: white;
-    color: rgb(255, 136, 0);
+    color: #007AFF;
     font-size: large;
     cursor: pointer;
 }
@@ -156,7 +156,7 @@
 
 .personal{
     font-size: large;
-    color: rgb(255, 166, 0);
+    color: #007AFF;
 }
 
 .finance{
@@ -215,7 +215,7 @@
 }
 
 .modal-content input:focus {
-  border-color: orange;
+  border-color: #007AFF;
   box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
 }
 
@@ -237,12 +237,12 @@
 }
 
 .modal-buttons button:first-child {
-  background-color: orange;
+  background-color: #007AFF;
   color: white;
 }
 
 .modal-buttons button:first-child:hover {
-  background-color: darkorange;
+  background-color: #007AFF;
 }
 
 .modal-buttons button:last-child {

@@ -119,6 +119,7 @@ const Sidebar = () => {
             Drafts
           </span>{" "}
           <span>{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span>
+         <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span>
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? "item active" : "item")}

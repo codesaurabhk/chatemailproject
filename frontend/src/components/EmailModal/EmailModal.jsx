@@ -12,49 +12,51 @@ import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaMinus } from "react-icons/fa";
 import { GoScreenFull } from "react-icons/go";
 
-const EmailModal = ({
-  show,
-  onClose,
-  to: initialTo = "",
-  subject: initialSubject = "",
-  body: initialBody = "",
-}) => {
-  const [showCc, setShowCc] = useState(false);
-  const [showBcc, setShowBcc] = useState(false);
-  const [cc, setCc] = useState("");
-  const [bcc, setBcc] = useState("");
-  const [to, setTo] = useState(initialTo);
-  const [subject, setSubject] = useState(initialSubject);
-  const [body, setBody] = useState(initialBody);
-  const [attachments, setAttachments] = useState([]);
-  const [images, setImages] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [showLinkInput, setShowLinkInput] = useState(false);
-  const [linkText, setLinkText] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
-  const [showCalendar, setShowCalendar] = useState(false);
+
+
+
+const EmailModal = ({ show, onClose }) => {
+    const [showCc, setShowCc] = useState(false);
+     const [showBcc, setShowBcc] = useState(false);
+     const [cc, setCc] = useState("");
+     const [bcc, setBcc] = useState("");
+    const [to, setTo] = useState("")
+    const [subject, setSubject] = useState("")
+    const [body, setBody] = useState("")
+    const [attachments, setAttachments] = useState([]);
+    const [images, setImages] = useState([]);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [showLinkInput, setShowLinkInput] = useState(false);
+const [linkText, setLinkText] = useState("");
+const [linkUrl, setLinkUrl] = useState("");
+const [showCalendar, setShowCalendar] = useState(false);
+
+
+
+
+    
+
+    
 
   const fileInputRef = useRef();
   const imageInputRef = useRef();
 
-  // for attachment
-  const handleAttachmentClick = () => {
-    fileInputRef.current.click();
-  };
+    // for attachment
+    const handleAttachmentClick = () => {
+        fileInputRef.current.click();
+    }
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    const nonImageFiles = files.filter(
-      (file) => !file.type.startsWith("image/")
-    );
-    setAttachments((prev) => [...attachments, ...nonImageFiles]);
-  };
-  // for image
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files || []);
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-    setImages((prev) => [...prev, ...imageFiles]);
-  };
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files)
+        const nonImageFiles = files.filter((file) => !file.type.startsWith("image/")) 
+        setAttachments((prev) => [...attachments, ...nonImageFiles])
+    }
+    // for image
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files || [])
+        const imageFiles = files.filter((file) => file.type.startsWith("image/")) 
+            setImages((prev) => [...prev, ...imageFiles])
+    }
 
   // for emoji
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -62,21 +64,46 @@ const EmailModal = ({
     setBody((prev) => prev + emojiData.emoji);
   };
 
-  if (!show) return null;
 
-  const handleSend = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("to", to);
-      formData.append("from", "userakashnettechinnov123@gmail.com"); // use default or actual
-      formData.append("subject", subject);
-      formData.append("body", body);
-      formData.append("cc", cc);
-      formData.append("bcc", bcc);
-      formData.append("name", "You");
-      formData.append("starred", false);
-      formData.append("bin", false);
-      formData.append("type", "sent");
+    if(!show) return null;
+
+    // const handleSend = async () => {
+    //     try {
+    //         const res = await axios.post("http://localhost:5000/api/email/send", {
+    //             to:[to], //send an array
+    //             from: "",
+    //             subject,
+    //             body:body || "",
+    //             cc:cc ? [cc] : [],
+    //             bcc:bcc ? [bcc] : [],
+    //             attachments,
+    //             image:"",
+    //             name:"You",
+    //             starred:false,
+    //             bin: false,
+    //             type: "sent"
+    //         })
+    //         alert("Email sent successfully!")
+    //         onClose();
+    //     }catch(error) {
+    //         console.error("Error sending email", error)
+    //         alert("Failed to send email")
+    //     }
+    // }
+
+    const handleSend = async () => {
+      try{
+       const formData = new FormData();
+       formData.append("to", to);
+        formData.append("from", ""); // use default or actual
+    formData.append("subject", subject);
+    formData.append("body", body);
+    formData.append("cc", cc);
+    formData.append("bcc", bcc);
+    formData.append("name", "You");
+    formData.append("starred", false);
+    formData.append("bin", false);
+    formData.append("type", "sent");
 
       //append files
       attachments.forEach((file) => {
@@ -86,36 +113,37 @@ const EmailModal = ({
         formData.append("images", img);
       });
 
-      await axios.post("http://localhost:5000/api/email/send", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert("Email sent successfully!");
-    } catch (error) {
-      console.error("Error sending email", error);
+    await axios.post("http://localhost:5000/api/email/send", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    })
+    alert("Email sent successfully!")
+      }catch(error) {
+       console.error("Error sending email", error)
+      }
     }
-  };
+  
 
-  const toggleExpanded = () => {
-    setIsExpanded((prev) => !prev);
-  };
-  const handleDelete = () => {
-    // Clear all input fields
-    setTo("");
-    setSubject("");
-    setBody("");
-    setCc("");
-    setBcc("");
-    setAttachments([]);
-    setShowCc(false);
-    setShowBcc(false);
-    setShowEmojiPicker(false);
-    setIsExpanded(false); // Optional: shrink modal back
+    const toggleExpanded = () => {
+  setIsExpanded(prev => !prev);
+};
+const handleDelete = () => {
+  // Clear all input fields
+  setTo("");
+  setSubject("");
+  setBody("");
+  setCc("");
+  setBcc("");
+  setAttachments([]);
+  setShowCc(false);
+  setShowBcc(false);
+  setShowEmojiPicker(false);
+  setIsExpanded(false); // Optional: shrink modal back
 
-    // Close the modal
-    onClose();
-  };
+  // Close the modal
+  onClose();
+};
 
   const handleInsertLink = () => {
     if (!linkText || !linkUrl) {
@@ -133,12 +161,6 @@ const EmailModal = ({
     setLinkUrl("");
   };
 
-  // for reply and forward
-  useEffect(() => {
-  setTo(initialTo);
-  setSubject(initialSubject);
-  setBody(initialBody);
-}, [initialTo, initialSubject, initialBody]);
 
   return (
     <div className="modal-overlay">
