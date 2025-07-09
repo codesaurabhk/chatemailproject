@@ -11,6 +11,8 @@ import EmailModal from "../EmailModal/EmailModal.jsx";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { FaDownLong } from "react-icons/fa6";
+import { BsEyeFill } from "react-icons/bs";
 
 const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -70,10 +72,10 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   // function for handle reply and forward
   const handleReply = () => {
     setModalData({
-      show: true,
-      to: email.from,
-      // subject:`Re: ${email.subject}`,
-      body: `\n\n------------------ Original Message ------------------\n${email.body}`,
+      show:  true,
+      to:  email.from,
+      // subject: `Re: ${email.subject}`,
+      body:  `\n\n------------------ Original Message ------------------\n${email.body}`,
     })
   }
 
@@ -104,6 +106,26 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   }, [body])
 
   if (!email) return null;
+
+  const handleDownload = async (url, filename) => {
+    try {
+      const response = await fetch(url, { mode: "cors" });
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl); // Clean up
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to download image.");
+    }
+  };
+
 
   return (
     <div className="email-detail">
@@ -336,45 +358,49 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
             // )}`;
             return (
               <div
+                className="attachment-box"
                 key={index}
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  position: "relative",
-                  cursor: "pointer",
-                }}
+              // style={{
+              //   width: "150px",
+              //   height: "150px",
+              //   border: "1px solid #ccc",
+              //   borderRadius: "10px",
+              //   overflow: "hidden",
+              //   position: "relative",
+              //   cursor: "pointer",
+              // }}
               >
                 <img
                   src={imgUrl}
                   alt={`attachment-${index}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="attachment-img"
+                // style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                <a href={imgUrl} download className="hover-download-btn" title="Download">
-                  ⬇
-                </a>
+              {/* <a href={imgUrl} download className="hover-download-btn" title="Download">
+                            ⬇
+                          </a> */}
                 {/* Hover Buttons like Gmail */}
                 <div
-                  style={{
-                    position: "absolute",
-                    bottom: "5px",
-                    left: "5px",
-                    right: "5px",
-                    display: "flex",
-                    justifyContent: "space-around",
-                    background: "rgba(0, 0, 0, 0.6)",
-                    color: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                    opacity: 0,
-                    transition: "opacity 0.3s",
-                  }}
-                  className="hover-actions"
+                  // style={{
+                  //   position: "absolute",
+                  //   bottom: "5px",
+                  //   left: "5px",
+                  //   right: "5px",
+                  //   display: "flex",
+                  //   justifyContent: "space-around",
+                  //   background: "rgba(0, 0, 0, 0.6)",
+                  //   color: "#fff",
+                  //   padding: "5px",
+                  //   borderRadius: "5px",
+                  //   opacity: 0,
+                  //   transition: "opacity 0.3s",
+                  // }}
+                  // download={`attachment-${index}.jpg`}
+                  className="hover-download-btn"
+                // className="hover-actions"
                 >
-                  <a href={imgUrl} download style={{ color: "white" }}>
-                    ⬇
+                  <a onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#" style={{ color: "white" }}>
+                    <FaDownLong />
                   </a>
                   <a
                     href={imgUrl}
@@ -382,7 +408,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
                     rel="noreferrer"
                     style={{ color: "white" }}
                   >
-                    👁️
+                    <BsEyeFill />
                   </a>
                 </div>
               </div>
