@@ -36,7 +36,9 @@ const Sidebar = () => {
   const drafts = JSON.parse(localStorage.getItem("emailDrafts")) || [];
 
   useEffect(() => {
-    localStorage.setItem("customLabels", JSON.stringify(customLabels));
+
+
+
     const fetchEmails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/email/receive");
@@ -56,7 +58,7 @@ const Sidebar = () => {
     };
     fetchEmails();
     fetchDeletedCount();
-  }, [customLabels]);
+  }, []);
 
   return (
     <>
