@@ -35,7 +35,9 @@ const Sidebar = () => {
 
 
   useEffect(() => {
-    localStorage.setItem("customLabels", JSON.stringify(customLabels));
+
+
+
     const fetchEmails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/email/receive");
@@ -55,7 +57,7 @@ const Sidebar = () => {
     };
     fetchEmails();
     fetchDeletedCount();
-  }, [customLabels]);
+  }, []);
 
   return (
     <>
@@ -120,6 +122,8 @@ const Sidebar = () => {
             </span>{" "}
             <span>{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span>
             {/* <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span> */}
+
+            <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}
