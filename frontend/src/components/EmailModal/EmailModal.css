@@ -21,7 +21,7 @@
 }
 
 .modal-header {
-  background-color: #1a2b6d;
+  background-color: #007AFF;
   color: white;
   padding: 12px 16px;
   display: flex;
@@ -59,7 +59,7 @@
   margin-top: 5px;
   border: 1px solid #ccc;
   width: 100%;
-   outline: none;
+  outline: none;
   border: 1px solid rgb(151, 150, 150);
 }
 
@@ -77,9 +77,10 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.subject{
+
+.subject {
   width: 77.5%;
-   flex-grow: 1;
+  flex-grow: 1;
   padding: 6px;
   /* margin-right: 33px; */
   border-radius: 4px;
@@ -94,7 +95,7 @@
 .email-body {
   min-height: 120px;
   resize: none;
-   outline: none;
+  outline: none;
   border: 1px solid rgb(151, 150, 150);
 }
 
@@ -114,16 +115,19 @@
   cursor: pointer;
   font-size: 16px;
 }
-.btns{
-   background: transparent;
+
+.btns {
+  background: transparent;
   border: none;
   /* margin-right: 0px; */
   cursor: pointer;
   font-size: 16px;
 }
-.minus{
+
+.minus {
   color: white;
 }
+
 .send-btn {
   background-color: #007AFF;
   color: white;
@@ -167,6 +171,7 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
 .calendar-popup {
   margin-top: 10px;
 }
