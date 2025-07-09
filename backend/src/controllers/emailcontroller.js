@@ -86,6 +86,8 @@ const sendEmail = async (req, res) => {
     res
       .status(201)
       .json({ success: true, message: "Email sent", data: savedEmail });
+    console.log("FILES RECEIVED:", req.files);
+
   } catch (error) {
     res
       .status(500)

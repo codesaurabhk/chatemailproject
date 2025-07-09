@@ -23,11 +23,11 @@ const Sidebar = () => {
   const [showMores, setshowMores] = useState(false);
   const [showMoref, setshowMoref] = useState(false);
   const [emails, setEmails] = useState([]);
-  
+
   const [customLabels, setCustomLabels] = useState(() => {
-  const stored = localStorage.getItem("customLabels");
-  return stored ? JSON.parse(stored) : [];
-});
+    const stored = localStorage.getItem("customLabels");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [newLabelName, setNewLabelName] = useState("");
   const [showLabelModal, setShowLabelModal] = useState(false);
   const [showAllLabels, setShowAllLabels] = useState(false);
@@ -46,183 +46,183 @@ const Sidebar = () => {
     };
     // for deleted
     const fetchDeletedCount = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/email/deleted");
-      setDeletedCount(res.data.data.length);
-    } catch (error) {
-      console.error("Failed to fetch deleted emails", error);
-    }
-  };
+      try {
+        const res = await axios.get("http://localhost:5000/api/email/deleted");
+        setDeletedCount(res.data.data.length);
+      } catch (error) {
+        console.error("Failed to fetch deleted emails", error);
+      }
+    };
     fetchEmails();
     fetchDeletedCount();
   }, [customLabels]);
 
   return (
     <>
-    <div className="sidebarm">
-      <div className="user-box">
-        <img className="dp" src={Img} alt="profile" />
-        <div>
-          <div className="name">James Hong</div>
-          <div className="emailhong">Jnh343@example.com</div>
-        </div>
-      </div>
-
-      <div className="compose" onClick={() => setEmailShow(true)}>
-        <FaRegEdit />
-        Compose
-      </div>
-      <EmailModal show={emailshow} onClose={() => setEmailShow(false)} />
-
-      <div className="section border-bootom">
-        <div className="section-title">Emails</div>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/inbox"
-        >
-          <span>
-            <HiOutlineInbox />
-            Inbox
-          </span>{" "}
-          <span className="count">{emails.filter((email) => email.type === 'inbox' && !email.deleted).length}</span>
-        </NavLink>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/starred"
-        >
-          <span>
-            <FaRegStar />
-            Starred
-          </span>{" "}
-          <span>{emails.filter((email) => email.starred && !email.deleted).length}</span>
-        </NavLink>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/sent"
-        >
-          <span>
-            <IoRocketOutline />
-            Sent
-          </span>{" "}
-          <span>{emails.filter((email) => email.type === 'sent' && !email.deleted).length}</span>
-        </NavLink>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/drafts"
-        >
-          <span>
-            <FaRegFilePdf />
-            Drafts
-          </span>{" "}
-          <span>{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span>
-         <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span>
-        </NavLink>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/deleted"
-        >
-          <span>
-            <RiDeleteBinLine />
-            Deleted{" "}
-          </span>
-          <span>{deletedCount}</span>
-        </NavLink>
-        <NavLink
-          className={({ isActive }) => (isActive ? "item active" : "item")}
-          style={{ textDecoration: "none" }}
-          to="/spam"
-        >
-          <span>
-            <RiSpam2Line />
-            Spam{" "}
-          </span>
-          <span>{emails.filter((email) => email.spam && !email.deleted).length}</span>
-        </NavLink>
-        {showMore && (
-          <>
-            <NavLink
-              className={({ isActive }) => (isActive ? "item active" : "item")}
-              style={{ textDecoration: "none" }}
-              to="/important"
-            >
-              <span>
-                <ImCompass />
-                Important{" "}
-              </span>
-              <span>{emails.filter((email) => email.important && !email.deleted).length}</span>
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => (isActive ? "item active" : "item")}
-              style={{ textDecoration: "none" }}
-              to="/allemails"
-            >
-              <span>
-                <PiUploadLight />
-                All Emails{" "}
-              </span>
-              <span>{emails.length}</span>
-            </NavLink>
-          </>
-        )}
-
-        <div className="item" onClick={() => setshowMore((prev) => !prev)}>
-          {showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />}{" "}
-          {showMore && <FaAngleUp />}{" "}
-        </div>
-      </div>
-      {showLabelModal && (
-        <div className="modal-overlay2">
-          <div className="modal-content">
-            <h3>Add New Label</h3>
-            <input
-              type="text"
-              value={newLabelName}
-              onChange={(e) => setNewLabelName(e.target.value)}
-              placeholder="Enter label name"
-            />
-            <div className="modal-buttons">
-              <button
-                onClick={() => {
-                  if (newLabelName.trim()) {
-                    setCustomLabels([...customLabels, newLabelName.trim()]);
-                    setNewLabelName("");
-                    setShowLabelModal(false);
-                  }
-                }}
-              >
-                Add
-              </button>
-              <button onClick={() => setShowLabelModal(false)}>Cancel</button>
-            </div>
+      <div className="sidebarm">
+        <div className="user-box">
+          <img className="dp" src={Img} alt="profile" />
+          <div>
+            <div className="name">James Hong</div>
+            <div className="emailhong">Jnh343@example.com</div>
           </div>
         </div>
-      )}
-      <div className="section border-bootom">
-        <div className="section-title">
-          Labels{" "}
-          <div className="plus" onClick={() => setShowLabelModal(true)}>
-            <FaSquarePlus />
-          </div>
+
+        <div className="compose" onClick={() => setEmailShow(true)}>
+          <FaRegEdit />
+          Compose
         </div>
-        {(showAllLabels ? customLabels : customLabels.slice(0, 5)).map((label, index) => (
+        <EmailModal show={emailshow} onClose={() => setEmailShow(false)} />
+
+        <div className="section border-bootom">
+          <div className="section-title">Emails</div>
           <NavLink
-            key={index}
             className={({ isActive }) => (isActive ? "item active" : "item")}
-            style={{ textDecoration: "none", color: "black" }}
-            to={`/${label.toLowerCase()}`}
+            style={{ textDecoration: "none" }}
+            to="/inbox"
           >
-            <div className="label">
-              {" "}
-              <input type="checkbox" className="dot" /> {label}
-            </div>
+            <span>
+              <HiOutlineInbox />
+              Inbox
+            </span>{" "}
+            <span className="count">{emails.filter((email) => email.type === 'inbox' && !email.deleted).length}</span>
           </NavLink>
-        ))}
-        {/* <NavLink
+          <NavLink
+            className={({ isActive }) => (isActive ? "item active" : "item")}
+            style={{ textDecoration: "none" }}
+            to="/starred"
+          >
+            <span>
+              <FaRegStar />
+              Starred
+            </span>{" "}
+            <span>{emails.filter((email) => email.starred && !email.deleted).length}</span>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "item active" : "item")}
+            style={{ textDecoration: "none" }}
+            to="/sent"
+          >
+            <span>
+              <IoRocketOutline />
+              Sent
+            </span>{" "}
+            <span>{emails.filter((email) => email.type === 'sent' && !email.deleted).length}</span>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "item active" : "item")}
+            style={{ textDecoration: "none" }}
+            to="/drafts"
+          >
+            <span>
+              <FaRegFilePdf />
+              Drafts
+            </span>{" "}
+            <span>{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span>
+            {/* <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span> */}
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "item active" : "item")}
+            style={{ textDecoration: "none" }}
+            to="/deleted"
+          >
+            <span>
+              <RiDeleteBinLine />
+              Deleted{" "}
+            </span>
+            <span>{deletedCount}</span>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "item active" : "item")}
+            style={{ textDecoration: "none" }}
+            to="/spam"
+          >
+            <span>
+              <RiSpam2Line />
+              Spam{" "}
+            </span>
+            <span>{emails.filter((email) => email.spam && !email.deleted).length}</span>
+          </NavLink>
+          {showMore && (
+            <>
+              <NavLink
+                className={({ isActive }) => (isActive ? "item active" : "item")}
+                style={{ textDecoration: "none" }}
+                to="/important"
+              >
+                <span>
+                  <ImCompass />
+                  Important{" "}
+                </span>
+                <span>{emails.filter((email) => email.important && !email.deleted).length}</span>
+              </NavLink>
+              <NavLink
+                className={({ isActive }) => (isActive ? "item active" : "item")}
+                style={{ textDecoration: "none" }}
+                to="/allemails"
+              >
+                <span>
+                  <PiUploadLight />
+                  All Emails{" "}
+                </span>
+                <span>{emails.length}</span>
+              </NavLink>
+            </>
+          )}
+
+          <div className="item" onClick={() => setshowMore((prev) => !prev)}>
+            {showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />}{" "}
+            {showMore && <FaAngleUp />}{" "}
+          </div>
+        </div>
+        {showLabelModal && (
+          <div className="modal-overlay2">
+            <div className="modal-content">
+              <h3>Add New Label</h3>
+              <input
+                type="text"
+                value={newLabelName}
+                onChange={(e) => setNewLabelName(e.target.value)}
+                placeholder="Enter label name"
+              />
+              <div className="modal-buttons">
+                <button
+                  onClick={() => {
+                    if (newLabelName.trim()) {
+                      setCustomLabels([...customLabels, newLabelName.trim()]);
+                      setNewLabelName("");
+                      setShowLabelModal(false);
+                    }
+                  }}
+                >
+                  Add
+                </button>
+                <button onClick={() => setShowLabelModal(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="section border-bootom">
+          <div className="section-title">
+            Labels{" "}
+            <div className="plus" onClick={() => setShowLabelModal(true)}>
+              <FaSquarePlus />
+            </div>
+          </div>
+          {(showAllLabels ? customLabels : customLabels.slice(0, 5)).map((label, index) => (
+            <NavLink
+              key={index}
+              className={({ isActive }) => (isActive ? "item active" : "item")}
+              style={{ textDecoration: "none", color: "black" }}
+              to={`/${label.toLowerCase()}`}
+            >
+              <div className="label">
+                {" "}
+                <input type="checkbox" className="dot" /> {label}
+              </div>
+            </NavLink>
+          ))}
+          {/* <NavLink
           className={({ isActive }) => (isActive ? "item active" : "item")}
           style={{ textDecoration: "none", color: "black" }}
           to="/teamevents"
@@ -262,16 +262,16 @@ const Sidebar = () => {
             <input type="checkbox" className="dot projects" /> Projects
           </div>
         </NavLink> */}
-        
-         {customLabels.length > 5 && (
-    <div className="item" onClick={() => setShowAllLabels((prev) => !prev)}>
-      {showAllLabels ? "Show Less" : "Show More"}{" "}
-      {!showAllLabels ? <FaAngleDown /> : <FaAngleUp />}
-    </div>
-  )}
-      </div>
 
-      {/* <div className='section border-bootom'>
+          {customLabels.length > 5 && (
+            <div className="item" onClick={() => setShowAllLabels((prev) => !prev)}>
+              {showAllLabels ? "Show Less" : "Show More"}{" "}
+              {!showAllLabels ? <FaAngleDown /> : <FaAngleUp />}
+            </div>
+          )}
+        </div>
+
+        {/* <div className='section border-bootom'>
         <div className='section-title'>Folders <div className='plus'><FaSquarePlus /></div></div>
         <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none', color: 'black' }} to='/design'><div className='label'><FaFolder className='projects' /> Projects</div></NavLink>
         <NavLink className={({ isActive }) => isActive ? 'item active' : 'item'} style={{ textDecoration: 'none', color: 'black' }} to='/design'><div className='label'><FaFolder className='personal' /> Personal</div></NavLink>
@@ -283,9 +283,9 @@ const Sidebar = () => {
 
 
       </div> */}
-    </div>
-  </>);
-  
+      </div>
+    </>);
+
 };
 
 export default Sidebar;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../EmailMessages/EmailMessages.css";
-import { IoIosSearch} from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
 import { RiFilterOffLine } from "react-icons/ri";
 import { BiRefresh } from "react-icons/bi";
 import { AiOutlineSetting } from "react-icons/ai";
@@ -13,11 +13,11 @@ import axios from "axios";
 import EmailDetail from "../EmailDetails/EmailDetail";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaReply } from "react-icons/fa";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 
-const EmailMessages = ({filteredEmails, isDeletedPage}) => {
+const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, isDeletedPage }) => {
   const [search, setSearch] = useState("");
   const [emails, setEmails] = useState([]);
 
@@ -102,35 +102,36 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
     setSelectedEmail(null)
   }
 
-  const handleToggleStar = async(id, currentStarred) => {
+  const handleToggleStar = async (id, currentStarred) => {
     try {
-     const updated = await axios.put(`http://localhost:5000/api/email/star/${id}`, {
-      starred: !currentStarred,
-     })
-     setEmails((prevEmails) => prevEmails.map((email) => email._id === id ? {...email, tags:{...email.tags, starred:!currentStarred}} : email))
-    //  update selectedEmail too if its open in detail view
-    if(selectedEmail?._id === id) {
-      setSelectedEmail((prev) => ({
-        ...prev, tags:{
-          ...prev.tags,
-          starred:!currentStarred
-        }
-      }))
-    }
-    }catch(error) {
-     console.error("Failed to update starred status", error)
+      const updated = await axios.put(`http://localhost:5000/api/email/star/${id}`, {
+        starred: !currentStarred,
+      })
+      setEmails((prevEmails) => prevEmails.map((email) => email._id === id ? { ...email, tags: { ...email.tags, starred: !currentStarred } } : email))
+      //  update selectedEmail too if its open in detail view
+      if (selectedEmail?._id === id) {
+        setSelectedEmail((prev) => ({
+          ...prev, tags: {
+            ...prev.tags,
+            starred: !currentStarred
+          }
+        }))
+      }
+    } catch (error) {
+      console.error("Failed to update starred status", error)
     }
   }
+   const toggleStar = externalToggleStar || handleToggleStar;
 
   // for delete permanently via delete page code
   const handlePermanentDelete = async () => {
     try {
-     await axios.post("http://localhost:5000/api/email/permanent-delete", {
-      ids: selectedEmails
-     });
-     setEmails((prev) => prev.filter((email) => !selectedEmails.includes(email._id)))
-     setSelectedEmails([])
-    }catch(error) {
+      await axios.post("http://localhost:5000/api/email/permanent-delete", {
+        ids: selectedEmails
+      });
+      setEmails((prev) => prev.filter((email) => !selectedEmails.includes(email._id)))
+      setSelectedEmails([])
+    } catch (error) {
       console.error("Failed to permanently delete emails", error)
     }
   }
@@ -168,19 +169,19 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
         </div>
         {/* for permanently delete mail via delete page */}
         {isDeletedPage && selectedEmails.length > 0 && (
-          <div style={{marginBottom:'10px', display:'flex', justifyContent:'flex-end'}}>
+          <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'flex-end' }}>
             <button
-            onClick={handlePermanentDelete}
-            style={{
-              padding:'8px 16px',
-              backgroundColor:'#d32f2f',
-              color:'white',
-              border:'none',
-              borderRadius:'4px',
-              cursor:'pointer'
-            }}
+              onClick={handlePermanentDelete}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#d32f2f',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
             >
-             Delete Forever
+              Delete Forever
             </button>
           </div>
         )}
@@ -208,7 +209,7 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
       {/* email message div */}
       <div className="justinmaindivmap">
         {selectedEmail ? (
-          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} onToggleStar={handleToggleStar} />
+          <EmailDetail email={selectedEmail} onBack={handleBackToInbox} handleToggleStar={handleToggleStar} />
         ) : (
           (filteredEmails || emails).filter((email) =>
             email.sender.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -221,23 +222,23 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
                 <div className="justinmaindivleftdiv">
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <label className="custom-checkbox">
-                    <input
-                    className="checkmarkinput"
-                      type="checkbox"
-                      checked={selectedEmails.includes(email._id)}
-                      onChange={() => {
-                        if (selectedEmails.includes(email._id)) {
-                          setSelectedEmails(selectedEmails.filter(id => id !== email._id));
-                        } else {
-                          setSelectedEmails([...selectedEmails, email._id]);
-                        }
-                      }}
-                      style={{ width: "16px", height: "16px", borderRadius: "5px" }}
-                    />
-                    <span className="checkmark"></span>
+                      <input
+                        className="checkmarkinput"
+                        type="checkbox"
+                        checked={selectedEmails.includes(email._id)}
+                        onChange={() => {
+                          if (selectedEmails.includes(email._id)) {
+                            setSelectedEmails(selectedEmails.filter(id => id !== email._id));
+                          } else {
+                            setSelectedEmails([...selectedEmails, email._id]);
+                          }
+                        }}
+                        style={{ width: "16px", height: "16px", borderRadius: "5px" }}
+                      />
+                      <span className="checkmark"></span>
                     </label>
-                    <span onClick={() => handleToggleStar(email._id, email.tags.starred)} style={{cursor:'pointer'}}>
-                      <AiFillStar style={{fontSize:"18px", color: email.tags.starred ? "#fba64b" : "#ccc"}}/>
+                    <span onClick={() => toggleStar(email._id, email.tags.starred)} style={{ cursor: 'pointer' }}>
+                      <AiFillStar style={{ fontSize: "18px", color: email.tags.starred ? "#fba64b" : "#ccc" }} />
 
                     </span>
                     {/* <span
@@ -258,21 +259,21 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
                         fontSize: "14px",
                         fontWeight: 400,
                         marginBottom: "5px",
-                        color:'black',
-                        marginRight:'22px'
+                        color: 'black',
+                        marginRight: '22px'
                       }}
                     >
                       To: {email.to[0]}
                     </span>
                     <span style={{ color: "black", fontSize: "14px" }}>
-                      {email.subject} - 
+                      {email.subject} -
                     </span>
                     <span style={{ color: "#636363", fontSize: "14px" }}>
                       {email.messagePreview}
                     </span>
                   </div>
                 </div>
-                
+
                 {/* right */}
                 <div className="justinmaindivrightdiv">
                   <span onClick={() => setMenuOpenId(email._id)}>
@@ -303,37 +304,64 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
                     }}
                   >
                   </span>
-                  <span className="time-label" style={{ marginBottom: "5px", fontSize:'16px' }}>{email.time}</span>
-                  <span className="delete-icon" style={{ cursor:'pointer', fontSize:'14px'}} onClick={() => handleDelete(email._id)}><RiDeleteBinLine/></span>
+                  <span className="time-label" style={{ marginBottom: "5px", fontSize: '16px' }}>{email.time}</span>
+                  <span className="delete-icon" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => handleDelete(email._id)}><RiDeleteBinLine /></span>
                 </div>
               </div>
-             
-                    {/* image and attachment */}
-                    {email.attachments?.length > 0 && (
-                      <div className="attachment-section" style={{marginLeft:'100px' }}>
-                        <div style={{display:'flex', flexWrap:'wrap', gap:'10px'}}>
-                          {email.attachments.slice(0,3).map((file, index) => {
-                            const fileName = file.split('/').pop();
-                             const isImage = file.match(/\.(jpeg|jpg|png|gif)$/i);
-                              const fileUrl = `http://localhost:5000/${file.replace(/\\/g, '/')}`;
-                              return(
-                                <Link
-                                key={index}
-                                href={fileUrl}
-                                target="_blank"
-                                rel="noopener no referrer"
-                                style={{display:'flex', alignItems:'center', gap:'8px',  border:'1px solid #ccc', padding:'5px 5px', borderRadius:'20px', textDecoration:'none', backgroundColor:'#f0f0f0', color:'#333'}}
-                                >
-                                  <img src={isImage ? fileUrl : "/pdf-icon.png"} alt="file" width="20" height="20" style={{backgroundColor:'red'}}/>
-                                  <span style={{whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:'150px', display:'inline-block', verticalAlign:'middle'}}>{fileName}</span>
-                                </Link>
-                              )
 
-                          })}
-                        </div>
-                      </div>
-                    )}         
-                  
+              {/* image and attachment */}
+              {/* image and attachment combined display */}
+              {(email.attachments?.length > 0 || email.image?.length > 0) && (
+                <div className="attachment-section" style={{ marginLeft: '100px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    {[...(email.attachments || []), ...(email.image || [])].map((fileUrl, index) => {
+                      const fileName = fileUrl.split('/').pop();
+                      const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
+
+                      return (
+                        <a
+                          key={index}
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            border: '1px solid #ccc',
+                            padding: '5px 5px',
+                            borderRadius: '20px',
+                            textDecoration: 'none',
+                            backgroundColor: '#f0f0f0',
+                            color: '#333',
+                          }}
+                        >
+                          <img
+                            src={isImage ? fileUrl : "/pdf-icon.png"}
+                            alt="file"
+                            width="20"
+                            height="20"
+                          />
+                          <span
+                            style={{
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              maxWidth: '150px',
+                              display: 'inline-block',
+                              verticalAlign: 'middle',
+                            }}
+                          >
+                            {fileName}
+                          </span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+
               {/* folder gallery */}
               <div className="foldergallerydiv">
                 <div
@@ -352,10 +380,10 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
                     <GrGallery />
                   </span>
                   <span>{email.image?.length}</span>
-                  {console.log('imgg length', email.image?.length)}
+                  {/* {console.log('imgg length', email.image?.length)} */}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span
+                  {/* <span
                     style={{
                       padding: "4px 7px",
                       backgroundColor: "#010c27",
@@ -365,7 +393,7 @@ const EmailMessages = ({filteredEmails, isDeletedPage}) => {
                     }}
                   >
                     +{email.attachments?.length}
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>

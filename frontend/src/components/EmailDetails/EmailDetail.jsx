@@ -12,7 +12,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const EmailDetail = ({ email, onBack, onToggleStar }) => {
+const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   const [showDetails, setShowDetails] = useState(false);
   // const [emailshow, setEmailShow] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState(null);
@@ -23,15 +23,15 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
 
   // for handlereply and forward
   const [modalData, setModalData] = useState({
-    show:false,
-    to:"",
-    subject:"",
-    body:""
+    show: false,
+    to: "",
+    subject: "",
+    body: ""
   })
 
   const menuRef = useRef();
 
- 
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -70,33 +70,23 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
   // function for handle reply and forward
   const handleReply = () => {
     setModalData({
-      show:true,
-      to:email.from,
-      subject:`Re: ${email.subject}`,
-      body:`\n\n------------------ Original Message ------------------\n${email.body}`,
+      show: true,
+      to: email.from,
+      // subject:`Re: ${email.subject}`,
+      body: `\n\n------------------ Original Message ------------------\n${email.body}`,
     })
   }
 
   const handleForward = () => {
     setModalData({
-      show:true,
-      to:"",
-      subject:`Fwd: ${email.subject}`,
-      body:`\n\n------------------ Forwarded Message ------------------\nFrom: ${email.from}\nDate: ${new Date(email.createdAt).toLocaleString()}\nTo: ${email.to.join(", ")}\nSubject: ${email.subject}\n\n${email.body}`
+      show: true,
+      to: "",
+      subject: `Fwd: ${email.subject}`,
+      body: `\n\n------------------ Forwarded Message ------------------\nFrom: ${email.from}\nDate: ${new Date(email.createdAt).toLocaleString()}\nTo: ${email.to.join(", ")}\nSubject: ${email.subject}\n\n${email.body}`
     });
   };
 
-  // for emojis
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if(e.key === 'Enter' && body.trim() !== "") {
-        setEmojiList((prev) => [...prev, body]);
-        // setBody(""); //clear the emoji input
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [body])
+
 
   const handleEmojiClick = (emojiData) => {
     setEmojiList((prev) => [...prev, emojiData.emoji])
@@ -104,14 +94,14 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
   }
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if(e.key === 'Enter' && body.trim() !== "") {
+      if (e.key === 'Enter' && body.trim() !== "") {
         setEmojiList((prev) => [...prev, body])
         // setBody("")
       }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-   }, [body])
+  }, [body])
 
   if (!email) return null;
 
@@ -145,6 +135,7 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           onClick={() => setEmailShow(true)}
         >
           <button
+            onClick={handleForward}
             style={{
               border: "none",
               background: "none",
@@ -184,17 +175,17 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           <span className="email-time">
             {email.createdAt && !isNaN(new Date(email.createdAt))
               ? new Intl.DateTimeFormat("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                }).format(new Date(email.createdAt))
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }).format(new Date(email.createdAt))
               : "Invalid Date"}
           </span>
-          <span className="icon" onClick={() => onToggleStar(email._id, email.tags.starred)} >
-            <AiFillStar style={{fontSize:'20px', color:email.tags.starred ? '#fba64b' : 'ccc'}}/>
+          <span className="icon" onClick={() => handleToggleStar(email._id, email.tags.starred)} >
+            <AiFillStar style={{ fontSize: '20px', color: email.tags.starred ? '#fba64b' : 'ccc' }} />
           </span>
           <span
             className="icon"
@@ -205,12 +196,13 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           <span className="icon" onClick={handleReply}>
             <LuReply />
           </span>
-          <EmailModal 
-          show={modalData.show} 
-          onClose={() => setModalData({...modalData, show:false})}
-          to={modalData.subject}
-          body={modalData.body}
-           />
+          <EmailModal
+            show={modalData.show}
+            onClose={() => setModalData({ ...modalData, show: false })}
+            to={modalData.to}
+            subject={modalData.subject}
+            body={modalData.body}
+          />
           <span onClick={() => setMenuOpenId(email._id)}>
             <div style={{ position: "relative" }}>
               <span
@@ -303,10 +295,10 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
             <span style={{ fontSize: "16px", color: "black", fontWeight: 500 }}>
               {email.createdAt && !isNaN(new Date(email.createdAt))
                 ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(email.createdAt))
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                }).format(new Date(email.createdAt))
                 : "Invalid Date"}
             </span>
           </p>
@@ -325,23 +317,23 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           </p>
         </div>
       )}
-     <div
-  className="email-body" style={{border:'none'}}
-  dangerouslySetInnerHTML={{
-    __html: email.body.replace(/\n/g, "<br/>")
-  }}
-/>
+      <div
+        className="email-body" style={{ border: 'none' }}
+        dangerouslySetInnerHTML={{
+          __html: email.body.replace(/\n/g, "<br/>")
+        }}
+      />
 
       {/* image and attachment */}
       <div style={{ marginTop: "20px" }}>
         <h4>Attachments</h4>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
           {/* Images */}
-          {email.image?.map((imgPath, index) => {
-            const imgUrl = `http://localhost:5000/${imgPath.replace(
-              /\\/g,
-              "/"
-            )}`;
+          {email.image?.map((imgUrl, index) => {
+            // const imgUrl = `http://localhost:5000/${imgPath.replace(
+            //   /\\/g,
+            //   "/"
+            // )}`;
             return (
               <div
                 key={index}
@@ -360,9 +352,9 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
                   alt={`attachment-${index}`}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                  <a href={imgUrl} download className="hover-download-btn" title="Download">
-        ⬇
-      </a>
+                <a href={imgUrl} download className="hover-download-btn" title="Download">
+                  ⬇
+                </a>
                 {/* Hover Buttons like Gmail */}
                 <div
                   style={{
@@ -398,10 +390,10 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           })}
 
           {/* PDFs and Others */}
-          {email.attachments?.map((file, index) => {
-            const fileUrl = `http://localhost:5000/${file.replace(/\\/g, "/")}`;
-            const fileName = file.split("/").pop();
-            const isImage = file.match(/\.(jpeg|jpg|png|gif)$/i);
+          {email.attachments?.map((fileUrl, index) => {
+            // const fileUrl = `http://localhost:5000/${file.replace(/\\/g, "/")}`;
+            const fileName = fileUrl.split("/").pop();
+            const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
             if (isImage) return null; // skip duplicate image
             return (
               <div
@@ -431,12 +423,12 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           })}
         </div>
         {emojiList.length > 0 && (
-  <div className="emoji-preview" style={{marginTop:"10px", fontSize:"22px"}}>
-  {emojiList.map((emoji, index) => (
-    <span key={index} style={{marginRight:'10px'}}>{emoji}</span>
-  ))}
-  </div>
-)}
+          <div className="emoji-preview" style={{ marginTop: "10px", fontSize: "22px" }}>
+            {emojiList.map((emoji, index) => (
+              <span key={index} style={{ marginRight: '10px' }}>{emoji}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div

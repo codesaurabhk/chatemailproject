@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import EmailMessages from '../EmailMessages/EmailMessages';
 import axios from 'axios';
 
-const Sent = () => {
-   const [emails, setEmails] = useState([]);
+const Sent = ({ onToggleStar }) => {
+  const [emails, setEmails] = useState([]);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchInboxEmails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/email/receive");
@@ -25,9 +25,9 @@ const Sent = () => {
             messagePreview: (email.body || "").slice(0, 50) + "...",
             time: email.createdAt && !isNaN(new Date(email.createdAt))
               ? new Intl.DateTimeFormat('en-GB', {
-                  day: '2-digit', month: 'short', year: 'numeric',
-                  hour: '2-digit', minute: '2-digit', hour12: true
-                }).format(new Date(email.createdAt))
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+              }).format(new Date(email.createdAt))
               : 'Invalid Date',
             status: { dotColor: "red" },
             folders: {
@@ -51,8 +51,27 @@ const Sent = () => {
     fetchInboxEmails();
   }, []);
 
+  const handleToggleStar = async (id, currentStarred) => {
+    try {
+      await axios.put(`http://localhost:5000/api/email/star/${id}`, {
+        starred: !currentStarred,
+      });
+
+      setEmails((prevEmails) =>
+        prevEmails.map((email) =>
+          email._id === id
+            ? { ...email, tags: { ...email.tags, starred: !currentStarred } }
+            : email
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update starred status", error);
+    }
+  };
+
+
   return (
-    <EmailMessages filteredEmails={emails}/>
+    <EmailMessages filteredEmails={emails} handleToggleStar={handleToggleStar} />
   )
 }
 

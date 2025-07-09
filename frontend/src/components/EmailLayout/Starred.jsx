@@ -3,7 +3,9 @@ import axios from 'axios'
 import EmailMessages from '../EmailMessages/EmailMessages'
 
 const Starred = () => {
- const [starredEmails, setStarredEmails] = useState([]);
+  const [starredEmails, setStarredEmails] = useState([]);
+  const [emails, setEmails] = useState([]);
+  
  useEffect(() => {
     const fetchStarredEmails = async () => {
       try {
@@ -48,9 +50,27 @@ const Starred = () => {
     };
 
     fetchStarredEmails();
-  }, []);
+ }, []);
+  
+  const handleToggleStar = async (id, currentStarred) => {
+    try {
+      await axios.put(`http://localhost:5000/api/email/star/${id}`, {
+        starred: !currentStarred,
+      });
 
-  return <EmailMessages filteredEmails={starredEmails} />;
+      setEmails((prevEmails) =>
+        prevEmails.map((email) =>
+          email._id === id
+            ? { ...email, tags: { ...email.tags, starred: !currentStarred } }
+            : email
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update starred status", error);
+    }
+  };
+
+  return <EmailMessages filteredEmails={starredEmails} handleToggleStar={handleToggleStar} />;
 };
 
 export default Starred
