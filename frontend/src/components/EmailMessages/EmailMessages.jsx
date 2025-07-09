@@ -121,7 +121,7 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
       console.error("Failed to update starred status", error)
     }
   }
-   const toggleStar = externalToggleStar || handleToggleStar;
+  const toggleStar = externalToggleStar || handleToggleStar;
 
   // for delete permanently via delete page code
   const handlePermanentDelete = async () => {
@@ -163,29 +163,28 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
                   <button className="dt-icon" onClick={handleDeleteSelected} style={{ marginLeft: "20px" }}>
                     <RiDeleteBinLine />
                   </button>
+                  {/* for permanently delete mail via delete page */}
+                  {isDeletedPage && selectedEmails.length > 0 && (
+                    <button
+                      onClick={handlePermanentDelete}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#d32f2f',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        marginLeft: '10px'
+                      }}
+                    >
+                      Delete Forever
+                    </button>
+                  )}
+                  {/*end of permanently delete mail via delete page */}
                 </div>
               )}</span> </span>
 
         </div>
-        {/* for permanently delete mail via delete page */}
-        {isDeletedPage && selectedEmails.length > 0 && (
-          <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              onClick={handlePermanentDelete}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#d32f2f',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Delete Forever
-            </button>
-          </div>
-        )}
-        {/*end of permanently delete mail via delete page */}
         {/* filter */}
         <div className="filter">
           <span className="searchinputdiv">

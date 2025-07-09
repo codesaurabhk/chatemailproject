@@ -33,6 +33,7 @@ const Sidebar = () => {
   const [showAllLabels, setShowAllLabels] = useState(false);
   const [deletedCount, setDeletedCount] = useState(0);
 
+  const drafts = JSON.parse(localStorage.getItem("emailDrafts")) || [];
 
   useEffect(() => {
     localStorage.setItem("customLabels", JSON.stringify(customLabels));
@@ -118,8 +119,7 @@ const Sidebar = () => {
               <FaRegFilePdf />
               Drafts
             </span>{" "}
-            <span>{emails.filter(email => email.type === 'draft' && !email.deleted).length}</span>
-            {/* <span>{localStorage.getItem("emailDraft") ? 1 : 0}</span> */}
+            <span><span>{drafts.length}</span></span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}

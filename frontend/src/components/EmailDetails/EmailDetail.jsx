@@ -72,10 +72,10 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   // function for handle reply and forward
   const handleReply = () => {
     setModalData({
-      show:  true,
-      to:  email.from,
+      show: true,
+      to: email.from,
       // subject: `Re: ${email.subject}`,
-      body:  `\n\n------------------ Original Message ------------------\n${email.body}`,
+      body: `\n\n------------------ Original Message ------------------\n${email.body}`,
     })
   }
 
@@ -376,7 +376,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
                   className="attachment-img"
                 // style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-              {/* <a href={imgUrl} download className="hover-download-btn" title="Download">
+                {/* <a href={imgUrl} download className="hover-download-btn" title="Download">
                             ⬇
                           </a> */}
                 {/* Hover Buttons like Gmail */}
@@ -435,14 +435,14 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
               >
                 <img src="/pdf-icon.png" alt="pdf" width={40} />
                 <span style={{ width: "20px", height: "20px" }}>
-                  <Link
+                  <a
                     href={fileUrl}
                     target="_blank"
                     rel="noreferrer"
                     download
                   >
                     {fileName}
-                  </Link>
+                  </a>
                 </span>
               </div>
             );

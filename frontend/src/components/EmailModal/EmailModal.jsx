@@ -149,6 +149,43 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
   };
 
 
+  // handledraftdelete
+  const handleDraftDelete = () => {
+  const isContentFilled = to || subject || body || attachments.length || images.length;
+
+  if (isContentFilled) {
+    const newDraft = {
+      to,
+      subject,
+      body,
+      cc,
+      bcc,
+      attachments: [], // Don't save File objects, just names or empty
+      images: [],
+      timestamp: new Date().toISOString(),
+      type: "draft"
+    };
+
+    const existingDrafts = JSON.parse(localStorage.getItem("emailDrafts")) || [];
+    existingDrafts.push(newDraft);
+    localStorage.setItem("emailDrafts", JSON.stringify(existingDrafts));
+  }
+
+  // Reset all fields
+  setTo("");
+  setSubject("");
+  setBody("");
+  setCc("");
+  setBcc("");
+  setAttachments([]);
+  setImages([]);
+  setShowCc(false);
+  setShowBcc(false);
+  setShowEmojiPicker(false);
+  setIsExpanded(false);
+  onClose();
+};
+
   return (
     <div className="modal-overlay">
       <div className={`email-modal ${isExpanded ? "expanded-modal" : ""}`}>
@@ -161,7 +198,7 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
             <button className="btns minus" onClick={toggleExpanded}>
               <GoScreenFull />
             </button>
-            <button className="btns minus" onClick={onClose}>
+            <button className="btns minus" onClick={handleDraftDelete}>
               ✕
             </button>
           </div>
