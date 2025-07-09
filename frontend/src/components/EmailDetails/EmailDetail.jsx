@@ -23,15 +23,15 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
 
   // for handlereply and forward
   const [modalData, setModalData] = useState({
-    show:false,
-    to:"",
-    subject:"",
-    body:""
+    show: false,
+    to: "",
+    subject: "",
+    body: ""
   })
 
   const menuRef = useRef();
 
- 
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -70,26 +70,26 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
   // function for handle reply and forward
   const handleReply = () => {
     setModalData({
-      show:true,
-      to:email.from,
-      subject:`Re: ${email.subject}`,
-      body:`\n\n------------------ Original Message ------------------\n${email.body}`,
+      show: true,
+      to: email.from,
+      subject: `Re: ${email.subject}`,
+      body: `\n\n------------------ Original Message ------------------\n${email.body}`,
     })
   }
 
   const handleForward = () => {
     setModalData({
-      show:true,
-      to:"",
-      subject:`Fwd: ${email.subject}`,
-      body:`\n\n------------------ Forwarded Message ------------------\nFrom: ${email.from}\nDate: ${new Date(email.createdAt).toLocaleString()}\nTo: ${email.to.join(", ")}\nSubject: ${email.subject}\n\n${email.body}`
+      show: true,
+      to: "",
+      subject: `Fwd: ${email.subject}`,
+      body: `\n\n------------------ Forwarded Message ------------------\nFrom: ${email.from}\nDate: ${new Date(email.createdAt).toLocaleString()}\nTo: ${email.to.join(", ")}\nSubject: ${email.subject}\n\n${email.body}`
     });
   };
 
   // for emojis
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if(e.key === 'Enter' && body.trim() !== "") {
+      if (e.key === 'Enter' && body.trim() !== "") {
         setEmojiList((prev) => [...prev, body]);
         // setBody(""); //clear the emoji input
       }
@@ -104,16 +104,36 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
   }
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if(e.key === 'Enter' && body.trim() !== "") {
+      if (e.key === 'Enter' && body.trim() !== "") {
         setEmojiList((prev) => [...prev, body])
         // setBody("")
       }
     }
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-   }, [body])
+  }, [body])
 
   if (!email) return null;
+
+  const handleDownload = async (url, filename) => {
+    try {
+      const response = await fetch(url, { mode: "cors" });
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl); // Clean up
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to download image.");
+    }
+  };
+
 
   return (
     <div className="email-detail">
@@ -184,17 +204,17 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           <span className="email-time">
             {email.createdAt && !isNaN(new Date(email.createdAt))
               ? new Intl.DateTimeFormat("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                }).format(new Date(email.createdAt))
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }).format(new Date(email.createdAt))
               : "Invalid Date"}
           </span>
           <span className="icon" onClick={() => onToggleStar(email._id, email.tags.starred)} >
-            <AiFillStar style={{fontSize:'20px', color:email.tags.starred ? '#fba64b' : 'ccc'}}/>
+            <AiFillStar style={{ fontSize: '20px', color: email.tags.starred ? '#fba64b' : 'ccc' }} />
           </span>
           <span
             className="icon"
@@ -205,12 +225,12 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           <span className="icon" onClick={handleReply}>
             <LuReply />
           </span>
-          <EmailModal 
-          show={modalData.show} 
-          onClose={() => setModalData({...modalData, show:false})}
-          to={modalData.subject}
-          body={modalData.body}
-           />
+          <EmailModal
+            show={modalData.show}
+            onClose={() => setModalData({ ...modalData, show: false })}
+            to={modalData.subject}
+            body={modalData.body}
+          />
           <span onClick={() => setMenuOpenId(email._id)}>
             <div style={{ position: "relative" }}>
               <span
@@ -303,10 +323,10 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
             <span style={{ fontSize: "16px", color: "black", fontWeight: 500 }}>
               {email.createdAt && !isNaN(new Date(email.createdAt))
                 ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(email.createdAt))
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                }).format(new Date(email.createdAt))
                 : "Invalid Date"}
             </span>
           </p>
@@ -325,12 +345,12 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           </p>
         </div>
       )}
-     <div
-  className="email-body" style={{border:'none'}}
-  dangerouslySetInnerHTML={{
-    __html: email.body.replace(/\n/g, "<br/>")
-  }}
-/>
+      <div
+        className="email-body" style={{ border: 'none' }}
+        dangerouslySetInnerHTML={{
+          __html: email.body.replace(/\n/g, "<br/>")
+        }}
+      />
 
       {/* image and attachment */}
       <div style={{ marginTop: "20px" }}>
@@ -344,44 +364,48 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
             )}`;
             return (
               <div
+                className="attachment-box"
                 key={index}
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  position: "relative",
-                  cursor: "pointer",
-                }}
+              // style={{
+              //   width: "150px",
+              //   height: "150px",
+              //   border: "1px solid #ccc",
+              //   borderRadius: "10px",
+              //   overflow: "hidden",
+              //   position: "relative",
+              //   cursor: "pointer",
+              // }}
               >
                 <img
                   src={imgUrl}
                   alt={`attachment-${index}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="attachment-img"
+                // style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                  <a href={imgUrl} download className="hover-download-btn" title="Download">
-        ⬇
-      </a>
+                {/* <a href={imgUrl} download className="hover-download-btn" title="Download">
+                  ⬇
+                </a> */}
                 {/* Hover Buttons like Gmail */}
                 <div
-                  style={{
-                    position: "absolute",
-                    bottom: "5px",
-                    left: "5px",
-                    right: "5px",
-                    display: "flex",
-                    justifyContent: "space-around",
-                    background: "rgba(0, 0, 0, 0.6)",
-                    color: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                    opacity: 0,
-                    transition: "opacity 0.3s",
-                  }}
-                  className="hover-actions"
+                  // style={{
+                  //   position: "absolute",
+                  //   bottom: "5px",
+                  //   left: "5px",
+                  //   right: "5px",
+                  //   display: "flex",
+                  //   justifyContent: "space-around",
+                  //   background: "rgba(0, 0, 0, 0.6)",
+                  //   color: "#fff",
+                  //   padding: "5px",
+                  //   borderRadius: "5px",
+                  //   opacity: 0,
+                  //   transition: "opacity 0.3s",
+                  // }}
+                  // download={`attachment-${index}.jpg`}
+                  className="hover-download-btn"
+                // className="hover-actions"
                 >
-                  <a href={imgUrl} download style={{ color: "white" }}>
+                  <a onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#" style={{ color: "white" }}>
                     ⬇
                   </a>
                   <a
@@ -431,12 +455,12 @@ const EmailDetail = ({ email, onBack, onToggleStar }) => {
           })}
         </div>
         {emojiList.length > 0 && (
-  <div className="emoji-preview" style={{marginTop:"10px", fontSize:"22px"}}>
-  {emojiList.map((emoji, index) => (
-    <span key={index} style={{marginRight:'10px'}}>{emoji}</span>
-  ))}
-  </div>
-)}
+          <div className="emoji-preview" style={{ marginTop: "10px", fontSize: "22px" }}>
+            {emojiList.map((emoji, index) => (
+              <span key={index} style={{ marginRight: '10px' }}>{emoji}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div
