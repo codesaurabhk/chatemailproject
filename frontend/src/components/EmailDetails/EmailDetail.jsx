@@ -416,37 +416,64 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
           })}
 
           {/* PDFs and Others */}
-          {email.attachments?.map((fileUrl, index) => {
-            // const fileUrl = `http://localhost:5000/${file.replace(/\\/g, "/")}`;
-            const fileName = fileUrl.split("/").pop();
-            const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
-            if (isImage) return null; // skip duplicate image
-            return (
-              <div
-                key={index}
-                style={{
-                  width: "150px",
-                  height: "100px",
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  padding: "10px",
-                  backgroundColor: "#f8f8f8",
-                }}
-              >
-                <img src="/pdf-icon.png" alt="pdf" width={40} />
-                <span style={{ width: "20px", height: "20px" }}>
-                  <a
-                    href={fileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    download
-                  >
-                    {fileName}
-                  </a>
-                </span>
-              </div>
-            );
-          })}
+         {email.attachments?.map((fileUrl, index) => {
+  const fileName = fileUrl.split("/").pop();
+  const extension = fileUrl.split(".").pop().toLowerCase();
+  const isPdf = extension === "pdf";
+  const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
+  if (isImage) return null;
+
+  return (
+    <div
+      key={index}
+      style={{
+        width: "150px",
+        border: "1px solid #ccc",
+        borderRadius: "10px",
+        padding: "10px",
+        backgroundColor: "#f8f8f8",
+        textAlign: "center",
+      }}
+    >
+      <img
+        src={
+          isPdf
+            ? fileUrl.replace("/upload/", "/upload/pg_1,w_120,h_120,c_thumb/")
+            : "/file-icon.png"
+        }
+        alt="file"
+        width="100"
+        height="100"
+        style={{
+          objectFit: "contain",
+          borderRadius: "5px",
+          display: "block",
+          margin: "0 auto 10px",
+        }}
+      />
+      <a
+        href={fileUrl}
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          display: "block",
+          textDecoration: "none",
+          color: "#333",
+          fontWeight: "500",
+          fontSize: "14px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+        download
+        title={fileName}
+      >
+        {fileName}
+      </a>
+    </div>
+  );
+})}
+
         </div>
         {emojiList.length > 0 && (
           <div className="emoji-preview" style={{ marginTop: "10px", fontSize: "22px" }}>

@@ -135,6 +135,24 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
       console.error("Failed to permanently delete emails", error)
     }
   }
+
+   // for handlereply and forward
+    const [modalData, setModalData] = useState({
+      show: false,
+      to: "",
+      subject: "",
+      body: ""
+    })
+
+    // function for handle reply and forward
+  const handleReply = () => {
+    setModalData({
+      show: true,
+      to: emails.from,
+      // subject: `Re: ${email.subject}`,
+      body: `\n\n------------------ Original Message ------------------\n${emails.body}`,
+    })
+  }
   return (
     <div className="mainemailmessage">
       <div className="header">
@@ -264,7 +282,7 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
                     >
                       To: {email.to[0]}
                     </span>
-                    <span style={{ color: "black", fontSize: "14px" }}>
+                    <span style={{ color: "black", fontSize: "14px", fontWeight:600 }}>
                       {email.subject} -
                     </span>
                     <span style={{ color: "#636363", fontSize: "14px" }}>
@@ -288,7 +306,7 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
 
                       {menuOpenId === email._id && (
                         <div className="custom-popup-menu" ref={menuRef}>
-                          <div onClick={() => handleReply(email)}><FaReply /> Reply</div>
+                          <div onClick={handleReply}><FaReply /> Reply</div>
                           <div onClick={() => handleDelete(email._id)}> <RiDeleteBinLine /> Delete</div>
                         </div>
                       )}
@@ -315,7 +333,10 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                     {[...(email.attachments || []), ...(email.image || [])].map((fileUrl, index) => {
                       const fileName = fileUrl.split('/').pop();
+                      const extension = fileUrl.split('.').pop().toLowerCase();
                       const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
+                       const isPdf = extension === 'pdf';
+
 
                       return (
                         <a
@@ -336,11 +357,20 @@ const EmailMessages = ({ filteredEmails, handleToggleStar: externalToggleStar, i
                           }}
                         >
                           <img
-                            src={isImage ? fileUrl : "/pdf-icon.png"}
-                            alt="file"
-                            width="20"
-                            height="20"
-                          />
+  src={
+    isImage
+      ? fileUrl
+      : isPdf
+      ? fileUrl.replace("/upload/", "/upload/pg_1/w_60,h_60,c_thumb/")
+      : "/file-icon.png"
+  }
+  alt="file"
+  width="20"
+  height="20"
+  style={{ objectFit: "cover", borderRadius: "5px" }}
+/>
+
+
                           <span
                             style={{
                               whiteSpace: 'nowrap',
