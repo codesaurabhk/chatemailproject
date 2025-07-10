@@ -19,36 +19,46 @@ const sendEmail = async (req, res) => {
       type,
     } = req.body;
 
-    const attachments = (req.files.attachments || []).map((file) => file.path)
+    const attachments = (req.files.attachments || []).map((file) => file.path);
     const images = (req.files.images || []).map((file) => file.path);
 
-    // check for recipient existence
-    const allRecipients = [...to, ...cc, ...bcc];
+    // Ensure cc and bcc are always arrays
+    const validCC = Array.isArray(cc) ? cc : (cc ? [cc] : []);
+    const validBCC = Array.isArray(bcc) ? bcc : (bcc ? [bcc] : []);
+
+    // Log for debugging
+    console.log("Sending to:", to);
+    console.log("CC:", validCC);
+    console.log("BCC:", validBCC);
+    console.log("CC is valid array:", Array.isArray(validCC));
+    console.log("CC joined:", validCC && validCC.join(","));
+
+    // Check for recipient existence
+    const allRecipients = [...to, ...validCC, ...validBCC];
     const existingRecipients = await EmailModal.findOne({
-      type:"sent",   //only consider reciepient from sent emails
-      $or:[
-    {to:{$in: to}},
-    {cc: {$in: to}},
-    {bcc:{$in: to}}
-    ]
-  })
-  
+      type: "sent",   // Only consider recipient from sent emails
+      $or: [
+        { to: { $in: to } },
+        { cc: { $in: to } },
+        { bcc: { $in: to } }
+      ]
+    });
+
     const mailType = existingRecipients ? "sent" : "inbox";
 
     const email = new EmailModal({
       to,
-      cc,
-      bcc,
-      from:from || process.env.EMAIL_USER,
+      cc: validCC,
+      bcc: validBCC,
+      from: from || process.env.EMAIL_USER,
       subject,
       body,
       attachments,
       date,
-      image:images,
+      image: images,
       name,
       starred,
       bin,
-      // type: type || "sent",
       type: mailType,
     });
 
@@ -70,16 +80,15 @@ const sendEmail = async (req, res) => {
     const mailOptions = {
       from: from || process.env.EMAIL_USER,
       to: Array.isArray(to) ? to.join(",") : to,
-      cc: Array.isArray(cc) && cc.length ? cc.join(",") : undefined,
-      bcc: Array.isArray(bcc) && bcc.length ? bcc.join(",") : undefined,
+      cc: validCC.length > 0 ? validCC.join(",") : undefined,
+      bcc: validBCC.length > 0 ? validBCC.join(",") : undefined,
       subject,
-        //   text: body,
       html: `<div style="white-space: pre-wrap;">${body}</div>`,
-      attachments: [...attachments.map((file) => ({path: file})),
-        ...images.map((img) => ({path: img}))
+      attachments: [
+        ...attachments.map((file) => ({ path: file })),
+        ...images.map((img) => ({ path: img })),
       ],
     };
-
 
     await transporter.sendMail(mailOptions);
 
@@ -99,6 +108,8 @@ const sendEmail = async (req, res) => {
     console.log("ERROR", error);
   }
 };
+
+
 
 const receiveEmail = async (req, res) => {
   try {

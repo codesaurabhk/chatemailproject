@@ -14,8 +14,15 @@ const axios = require("axios");
 const sendEmail = async (req, res) => { 
   try {
     const {
-      to, cc, bcc, from, subject, body, date, name, starred, bin,
+      to, cc, bcc, from, subject, body, date, name, starred, bin, type
     } = req.body;
+
+      const attachments = (req.files.attachments || []).map((file) => file.path)
+    const images = (req.files.images || []).map((file) => file.path);
+
+    // Validate and convert cc and bcc to arrays if needed
+    const validCC = Array.isArray(cc) ? cc : (cc ? [cc] : []);
+    const validBCC = Array.isArray(bcc) ? bcc : (bcc ? [bcc] : []);
 
     const attachmentsUrls = (req.files.attachments || []).map((file) => file.path);
     const imageUrls = (req.files.images || []).map((file) => file.path);
@@ -82,12 +89,15 @@ const sendEmail = async (req, res) => {
 
     const mailOptions = {
       from: from || process.env.EMAIL_USER,
-      to: Array.isArray(to) ? to.join(",") : to,
-      cc: Array.isArray(cc) && cc.length ? cc.join(",") : undefined,
-      bcc: Array.isArray(bcc) && bcc.length ? bcc.join(",") : undefined,
+     to: Array.isArray(to) ? to.join(",") : to,
+      cc: validCC.length > 0 ? validCC.join(",") : undefined,
+      bcc: validBCC.length > 0 ? validBCC.join(",") : undefined,
       subject,
       html: `<div style="white-space: pre-wrap;">${body}</div>`,
-      attachments: formattedAttachments,
+       attachments:[
+        ...attachments.map((file) => ({ path: file })),
+        ...images.map((img) => ({ path: img })),
+      ],
     };
 
     await transporter.sendMail(mailOptions);
