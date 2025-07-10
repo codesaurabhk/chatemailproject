@@ -265,7 +265,7 @@
   left: 0;
   height: 14px;
   width: 14px;
-  background-color: #fff;
+  /* background-color: #fff; */
   border: 1px solid #ccc;
   border-radius: 3px;
 }

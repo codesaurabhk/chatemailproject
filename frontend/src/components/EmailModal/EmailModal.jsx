@@ -11,18 +11,23 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaMinus } from "react-icons/fa";
 import { GoScreenFull } from "react-icons/go";
+import { toast } from "react-toastify";
 
-
-
-
-const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject = "", body: initialBody = "" }) => {
+const EmailModal = ({
+  show,
+  onClose,
+  to: initialTo = "",
+  subject: initialSubject = "",
+  body: initialBody = "",
+  onSent
+}) => {
   const [showCc, setShowCc] = useState(false);
   const [showBcc, setShowBcc] = useState(false);
   const [cc, setCc] = useState("");
   const [bcc, setBcc] = useState("");
-  const [to, setTo] = useState("")
-  const [subject, setSubject] = useState("")
-  const [body, setBody] = useState("")
+  const [to, setTo] = useState("");
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [images, setImages] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -35,14 +40,9 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
   // sync when props change for (reply and forward)
   useEffect(() => {
     setTo(initialTo);
-    setSubject(initialSubject)
-    setBody(initialBody)
-  }, [initialTo, initialSubject, initialBody])
-
-
-
-
-
+    setSubject(initialSubject);
+    setBody(initialBody);
+  }, [initialTo, initialSubject, initialBody]);
 
   const fileInputRef = useRef();
   const imageInputRef = useRef();
@@ -50,19 +50,21 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
   // for attachment
   const handleAttachmentClick = () => {
     fileInputRef.current.click();
-  }
+  };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files)
-    const nonImageFiles = files.filter((file) => !file.type.startsWith("image/"))
-    setAttachments((prev) => [...attachments, ...nonImageFiles])
-  }
+    const files = Array.from(e.target.files);
+    const nonImageFiles = files.filter(
+      (file) => !file.type.startsWith("image/")
+    );
+    setAttachments((prev) => [...attachments, ...nonImageFiles]);
+  };
   // for image
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files || [])
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"))
-    setImages((prev) => [...prev, ...imageFiles])
-  }
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    setImages((prev) => [...prev, ...imageFiles]);
+  };
 
   // for emoji
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -70,12 +72,11 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
     setBody((prev) => prev + emojiData.emoji);
   };
 
-
   if (!show) return null;
 
   const handleSend = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const formData = new FormData();
       formData.append("to", to);
       formData.append("from", ""); // use default or actual
@@ -99,21 +100,24 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
       await axios.post("http://localhost:5000/api/email/send", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-        }
-      })
-      alert("Email sent successfully!")
+        },
+      });
+      toast.success("Email sent successfully!", {
+        position:'top-center'
+      });
+      if (onSent) {
+  onSent();
+}
       onClose();
     } catch (error) {
-      console.error("Error sending email", error)
+      console.error("Error sending email", error);
+    } finally {
+      setLoading(false);
     }
-    finally {
-      setLoading(false)
-    }
-  }
-
+  };
 
   const toggleExpanded = () => {
-    setIsExpanded(prev => !prev);
+    setIsExpanded((prev) => !prev);
   };
   const handleDelete = () => {
     // Clear all input fields
@@ -148,43 +152,44 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
     setLinkUrl("");
   };
 
-
   // handledraftdelete
   const handleDraftDelete = () => {
-  const isContentFilled = to || subject || body || attachments.length || images.length;
+    const isContentFilled =
+      to || subject || body || attachments.length || images.length;
 
-  if (isContentFilled) {
-    const newDraft = {
-      to,
-      subject,
-      body,
-      cc,
-      bcc,
-      attachments: [], // Don't save File objects, just names or empty
-      images: [],
-      timestamp: new Date().toISOString(),
-      type: "draft"
-    };
+    if (isContentFilled) {
+      const newDraft = {
+        to,
+        subject,
+        body,
+        cc,
+        bcc,
+        attachments: [], // Don't save File objects, just names or empty
+        images: [],
+        timestamp: new Date().toISOString(),
+        type: "draft",
+      };
 
-    const existingDrafts = JSON.parse(localStorage.getItem("emailDrafts")) || [];
-    existingDrafts.push(newDraft);
-    localStorage.setItem("emailDrafts", JSON.stringify(existingDrafts));
-  }
+      const existingDrafts =
+        JSON.parse(localStorage.getItem("emailDrafts")) || [];
+      existingDrafts.push(newDraft);
+      localStorage.setItem("emailDrafts", JSON.stringify(existingDrafts));
+    }
 
-  // Reset all fields
-  setTo("");
-  setSubject("");
-  setBody("");
-  setCc("");
-  setBcc("");
-  setAttachments([]);
-  setImages([]);
-  setShowCc(false);
-  setShowBcc(false);
-  setShowEmojiPicker(false);
-  setIsExpanded(false);
-  onClose();
-};
+    // Reset all fields
+    setTo("");
+    setSubject("");
+    setBody("");
+    setCc("");
+    setBcc("");
+    setAttachments([]);
+    setImages([]);
+    setShowCc(false);
+    setShowBcc(false);
+    setShowEmojiPicker(false);
+    setIsExpanded(false);
+    onClose();
+  };
 
   return (
     <div className="modal-overlay">
@@ -337,7 +342,11 @@ const EmailModal = ({ show, onClose, to: initialTo = "", subject: initialSubject
             <button onClick={handleDelete} className="btns">
               <RiDeleteBinLine />
             </button>
-            <button className="send-btn" onClick={handleSend} disabled={loading}>
+            <button
+              className="send-btn"
+              onClick={handleSend}
+              disabled={loading}
+            >
               {loading ? "Sending" : "Send ➜"}
             </button>
           </div>

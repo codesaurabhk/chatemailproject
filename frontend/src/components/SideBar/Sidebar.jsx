@@ -35,10 +35,7 @@ const Sidebar = () => {
 
   const drafts = JSON.parse(localStorage.getItem("emailDrafts")) || [];
 
-  useEffect(() => {
-
-
-
+  
     const fetchEmails = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/email/receive");
@@ -56,8 +53,16 @@ const Sidebar = () => {
         console.error("Failed to fetch deleted emails", error);
       }
     };
+    useEffect(() => {
     fetchEmails();
     fetchDeletedCount();
+
+    const interval = setInterval(() => {
+    fetchEmails();
+    fetchDeletedCount();
+  }, 10000); 
+
+  return () => clearInterval(interval); 
   }, []);
 
   return (
@@ -75,7 +80,7 @@ const Sidebar = () => {
           <FaRegEdit />
           Compose
         </div>
-        <EmailModal show={emailshow} onClose={() => setEmailShow(false)} />
+        <EmailModal show={emailshow} onClose={() => setEmailShow(false)} onSent={fetchEmails} />
 
         <div className="section border-bootom">
           <div className="section-title">Emails</div>
@@ -88,7 +93,13 @@ const Sidebar = () => {
               <HiOutlineInbox />
               Inbox
             </span>{" "}
-            <span className="count">{emails.filter((email) => email.type === 'inbox' && !email.deleted).length}</span>
+            <span className="count">
+              {
+                emails.filter(
+                  (email) => email.type === "inbox" && !email.deleted
+                ).length
+              }
+            </span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}
@@ -99,7 +110,9 @@ const Sidebar = () => {
               <FaRegStar />
               Starred
             </span>{" "}
-            <span>{emails.filter((email) => email.starred && !email.deleted).length}</span>
+            <span>
+              {emails.filter((email) => email.starred && !email.deleted).length}
+            </span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}
@@ -110,7 +123,13 @@ const Sidebar = () => {
               <IoRocketOutline />
               Sent
             </span>{" "}
-            <span>{emails.filter((email) => email.type === 'sent' && !email.deleted).length}</span>
+            <span>
+              {
+                emails.filter(
+                  (email) => email.type === "sent" && !email.deleted
+                ).length
+              }
+            </span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}
@@ -121,7 +140,9 @@ const Sidebar = () => {
               <FaRegFilePdf />
               Drafts
             </span>{" "}
-            <span><span>{drafts.length}</span></span>
+            <span>
+              <span>{drafts.length}</span>
+            </span>
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? "item active" : "item")}
@@ -143,12 +164,16 @@ const Sidebar = () => {
               <RiSpam2Line />
               Spam{" "}
             </span>
-            <span>{emails.filter((email) => email.spam && !email.deleted).length}</span>
+            <span>
+              {emails.filter((email) => email.spam && !email.deleted).length}
+            </span>
           </NavLink>
           {showMore && (
             <>
               <NavLink
-                className={({ isActive }) => (isActive ? "item active" : "item")}
+                className={({ isActive }) =>
+                  isActive ? "item active" : "item"
+                }
                 style={{ textDecoration: "none" }}
                 to="/important"
               >
@@ -156,10 +181,17 @@ const Sidebar = () => {
                   <ImCompass />
                   Important{" "}
                 </span>
-                <span>{emails.filter((email) => email.important && !email.deleted).length}</span>
+                <span>
+                  {
+                    emails.filter((email) => email.important && !email.deleted)
+                      .length
+                  }
+                </span>
               </NavLink>
               <NavLink
-                className={({ isActive }) => (isActive ? "item active" : "item")}
+                className={({ isActive }) =>
+                  isActive ? "item active" : "item"
+                }
                 style={{ textDecoration: "none" }}
                 to="/allemails"
               >
@@ -173,8 +205,8 @@ const Sidebar = () => {
           )}
 
           <div className="item" onClick={() => setshowMore((prev) => !prev)}>
-            {showMore ? "Show Less" : "Show More"} {!showMore && <FaAngleDown />}{" "}
-            {showMore && <FaAngleUp />}{" "}
+            {showMore ? "Show Less" : "Show More"}{" "}
+            {!showMore && <FaAngleDown />} {showMore && <FaAngleUp />}{" "}
           </div>
         </div>
         {showLabelModal && (
@@ -211,19 +243,23 @@ const Sidebar = () => {
               <FaSquarePlus />
             </div>
           </div>
-          {(showAllLabels ? customLabels : customLabels.slice(0, 5)).map((label, index) => (
-            <NavLink
-              key={index}
-              className={({ isActive }) => (isActive ? "item active" : "item")}
-              style={{ textDecoration: "none", color: "black" }}
-              to={`/${label.toLowerCase()}`}
-            >
-              <div className="label">
-                {" "}
-                <input type="checkbox" className="dot" /> {label}
-              </div>
-            </NavLink>
-          ))}
+          {(showAllLabels ? customLabels : customLabels.slice(0, 5)).map(
+            (label, index) => (
+              <NavLink
+                key={index}
+                className={({ isActive }) =>
+                  isActive ? "item active" : "item"
+                }
+                style={{ textDecoration: "none", color: "black" }}
+                to={`/${label.toLowerCase()}`}
+              >
+                <div className="label">
+                  {" "}
+                  <input type="checkbox" className="dot" /> {label}
+                </div>
+              </NavLink>
+            )
+          )}
           {/* <NavLink
           className={({ isActive }) => (isActive ? "item active" : "item")}
           style={{ textDecoration: "none", color: "black" }}
@@ -266,7 +302,10 @@ const Sidebar = () => {
         </NavLink> */}
 
           {customLabels.length > 5 && (
-            <div className="item" onClick={() => setShowAllLabels((prev) => !prev)}>
+            <div
+              className="item"
+              onClick={() => setShowAllLabels((prev) => !prev)}
+            >
               {showAllLabels ? "Show Less" : "Show More"}{" "}
               {!showAllLabels ? <FaAngleDown /> : <FaAngleUp />}
             </div>
@@ -286,8 +325,8 @@ const Sidebar = () => {
 
       </div> */}
       </div>
-    </>);
-
+    </>
+  );
 };
 
 export default Sidebar;

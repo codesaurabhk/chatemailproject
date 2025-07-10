@@ -8,7 +8,19 @@ const Drafts = () => {
     const saved = localStorage.getItem("emailDrafts");
     if (saved) {
       const parsedDrafts = JSON.parse(saved);
-      const formatted = parsedDrafts.map((email) => {
+      const now = new Date();
+
+      // filter out drafts older than 30 days
+      const filtered = parsedDrafts.filter((email) => {
+        const timestamp = new Date(email.timestamp);
+        const ageInDays = (now - timestamp) / (1000 * 60 * 60 * 24);
+        return ageInDays <= 30;
+      });
+
+      // save updated list back to localStorage
+      localStorage.setItem("emailDrafts", JSON.stringify(filtered))
+
+      const formatted = filtered.map((email) => {
         const name = "You";
         const initials = "Y";
         return {

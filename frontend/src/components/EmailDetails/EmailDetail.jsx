@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 
 import { BsEyeFill } from "react-icons/bs";
 import { MdFileDownload } from "react-icons/md";
+import { BiSolidFilePdf } from "react-icons/bi";
 
 const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -361,53 +362,23 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
               <div
                 className="attachment-box"
                 key={index}
-              // style={{
-              //   width: "150px",
-              //   height: "150px",
-              //   border: "1px solid #ccc",
-              //   borderRadius: "10px",
-              //   overflow: "hidden",
-              //   position: "relative",
-              //   cursor: "pointer",
-              // }}
               >
                 <img
                   src={imgUrl}
                   alt={`attachment-${index}`}
                   className="attachment-img"
-                // style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                {/* <a href={imgUrl} download className="hover-download-btn" title="Download">
-                            ⬇
-                          </a> */}
-                {/* Hover Buttons like Gmail */}
                 <div
-                  // style={{
-                  //   position: "absolute",
-                  //   bottom: "5px",
-                  //   left: "5px",
-                  //   right: "5px",
-                  //   display: "flex",
-                  //   justifyContent: "space-around",
-                  //   background: "rgba(0, 0, 0, 0.6)",
-                  //   color: "#fff",
-                  //   padding: "5px",
-                  //   borderRadius: "5px",
-                  //   opacity: 0,
-                  //   transition: "opacity 0.3s",
-                  // }}
-                  // download={`attachment-${index}.jpg`}
                   className="hover-download-btn"
-                // className="hover-actions"
                 >
-                  <a onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#" style={{ color: "black" }}>
+                  <a className="acker" onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#">
                    <MdFileDownload />
                   </a>
                   <a
+                  className="acker"
                     href={imgUrl}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "black" }}
                   >
                     <BsEyeFill />
                   </a>
@@ -417,56 +388,52 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
           })}
 
           {/* PDFs and Others */}
-         {email.attachments?.map((fileUrl, index) => {
+ {email.attachments?.map((fileUrl, index) => {
   const fileName = fileUrl.split("/").pop();
   const extension = fileUrl.split(".").pop().toLowerCase();
-  const isPdf = extension === "pdf";
-  const isImage = fileUrl.match(/\.(jpeg|jpg|png|gif)$/i);
+  const isImage = /\.(jpeg|jpg|png|gif)$/i.test(fileUrl);
   if (isImage) return null;
 
+  const isPdf = extension === "pdf";
+  // const iconPreview = isPdf
+  //   ? fileUrl.replace("/upload/", "/upload/pg_1,w_120,h_120,c_thumb/")
+  //   : "/file-icon.png";
+  const iconPreview = isPdf
+  ? "/pdf.png"
+  : "/file-icon.png";
+
+
   return (
-    <div
-      key={index}
-      style={{
-        width: "150px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        padding: "10px",
-        backgroundColor: "#f8f8f8",
-        textAlign: "center",
-      }}
-    >
+    <div className="attachment-box" key={index}>
       <img
-        src={
-          isPdf
-            ? fileUrl.replace("/upload/", "/upload/pg_1,w_120,h_120,c_thumb/")
-            : "/file-icon.png"
-        }
-        alt="file"
-        width="100"
-        height="100"
-        style={{
-          objectFit: "contain",
-          borderRadius: "5px",
-          display: "block",
-          margin: "0 auto 10px",
-        }}
+        src={iconPreview}
+        // alt={fileName}
+        className="attachment-img"
       />
+      <div className="hover-download-btn">
+        <a className="acker" onClick={() => handleDownload(fileUrl, fileName)} href="#">
+          <MdFileDownload />
+        </a>
+        <a className="acker" href={fileUrl} target="_blank" rel="noreferrer">
+          <BsEyeFill />
+        </a>
+      </div>
       <a
+      className="acker"
         href={fileUrl}
         target="_blank"
         rel="noreferrer"
+        download
         style={{
           display: "block",
-          textDecoration: "none",
+          marginTop: "10px",
           color: "#333",
-          fontWeight: "500",
           fontSize: "14px",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
+          textDecoration: "none",
         }}
-        download
         title={fileName}
       >
         {fileName}
@@ -474,6 +441,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
     </div>
   );
 })}
+
 
         </div>
         {emojiList.length > 0 && (

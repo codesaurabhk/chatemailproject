@@ -40,6 +40,10 @@ const Deleted = () => {
       }
     }
     fetchDeletedEmails();
+     const interval = setInterval(() => {
+      fetchDeletedEmails();
+    }, 1000);
+    return () => clearInterval(interval)
    },[])
 
   return (
@@ -49,4 +53,4 @@ const Deleted = () => {
   )
 }
 
-export default Deleted
+export default Deleted;

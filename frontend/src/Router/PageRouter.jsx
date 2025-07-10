@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Text from '../components/text/text';
 import Sidebar from '../components/SideBar/Sidebar';
 import EmailMessages from '../components/EmailMessages/EmailMessages';
 import MailPage from '../Pages/MailPage';
@@ -9,10 +8,9 @@ import Starred from '../components/EmailLayout/Starred';
 import Sent from '../components/EmailLayout/Sent';
 import Drafts from '../components/EmailLayout/Drafts';
 import Importants from '../components/EmailLayout/Importants';
-import AllEmails from '../components/EmailLayout/AllEmails';
 import Spam from '../components/EmailLayout/Spam';
 import Deleted from '../components/EmailLayout/Deleted';
-import TeamLabel from '../components/EmailLayout/TeamLabel';
+
 
 
 const PageRouter = () => {
@@ -53,11 +51,7 @@ const PageRouter = () => {
           path:'deleted',
           element:<Deleted/>
         },
-        // labels
-         {
-          path:'teamevents',
-          element:<TeamLabel/>
-        }
+         
       ]
     },
        {
