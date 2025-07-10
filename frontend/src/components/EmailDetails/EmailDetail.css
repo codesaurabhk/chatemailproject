@@ -229,23 +229,34 @@ div:hover .hover-actions {
 
 .hover-download-btn {
   position: absolute;
-  bottom: 5px;
-  /* top: 25px; */
-  left: 5px;
-  right: 5px;
+  bottom: 0px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+
   display: flex;
   justify-content: space-around;
+  align-items: center;
+
   text-decoration: none;
-  background: rgba(0, 0, 0, 0.7);
+  /* background: rgba(0, 0, 0, 0.7); */
   color: white;
 
   padding: 5px;
   border-radius: 5px;
+  font-size: 20px;
 
-  font-size: 16px;
+  background: transparent;
   opacity: 0;
   transition: opacity 0.3s ease;
   /* z-index: 10; */
+}
+
+.attachment-box:hover .hover-download-btn {
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  pointer-events: auto; /* enable click only on hover */
+  pointer-events: none;
 }
 
 /* .attachment-box:hover .hover-download-btn {

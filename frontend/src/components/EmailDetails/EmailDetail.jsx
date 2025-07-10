@@ -11,8 +11,9 @@ import EmailModal from "../EmailModal/EmailModal.jsx";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FaDownLong } from "react-icons/fa6";
+
 import { BsEyeFill } from "react-icons/bs";
+import { MdFileDownload } from "react-icons/md";
 
 const EmailDetail = ({ email, onBack, handleToggleStar }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -399,14 +400,14 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
                   className="hover-download-btn"
                 // className="hover-actions"
                 >
-                  <a onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#" style={{ color: "white" }}>
-                    <FaDownLong />
+                  <a onClick={() => handleDownload(imgUrl, `attachment-${index}.jpeg`)} href="#" style={{ color: "black" }}>
+                   <MdFileDownload />
                   </a>
                   <a
                     href={imgUrl}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ color: "white" }}
+                    style={{ color: "black" }}
                   >
                     <BsEyeFill />
                   </a>
