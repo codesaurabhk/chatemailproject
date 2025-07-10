@@ -238,7 +238,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
 
               {menuOpenId === email._id && (
                 <div className="custom-popup-menu" ref={menuRef}>
-                  <div onClick={() => setEmailShow(true)}>
+                  <div onClick={handleReply}>
                     <FaReply /> Reply
                   </div>
                   <div onClick={() => handleDelete(email._id)}>
@@ -473,7 +473,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
             borderRadius: "20px",
             padding: "5px 20px",
           }}
-          onClick={() => setEmailShow(true)}
+          onClick={handleReply}
         >
           <LuReply style={{ marginRight: "10px" }} />
           Reply
@@ -484,7 +484,7 @@ const EmailDetail = ({ email, onBack, handleToggleStar }) => {
             borderRadius: "20px",
             padding: "5px 20px",
           }}
-          onClick={() => setEmailShow(true)}
+          onClick={handleForward}
         >
           <LuForward style={{ marginRight: "10px" }} />
           Forward
